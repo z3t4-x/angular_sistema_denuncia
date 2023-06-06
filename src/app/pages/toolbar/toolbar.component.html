@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="example-toolbar" >
+    <button mat-icon-button (click)="onToggleSidenav()">
+        <ng-container *ngIf="isSidenavOpened; else closedIcon">
+          <mat-icon>menu</mat-icon>
+        </ng-container>
+        <ng-template #closedIcon>
+          <mat-icon>close</mat-icon>
+        </ng-template>
+      </button>
+  
+    <h1 class="example-app-name">Vocalía superior</h1>
+  
+    <span class="example-spacer"></span>
+  
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/perfil">
+        <mat-icon>account_box</mat-icon>
+        <span>Mi Perfil</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Cerrar Sesión</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+  

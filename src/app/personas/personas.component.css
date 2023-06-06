@@ -1,0 +1,21 @@
+table {
+    width: 100%;
+  }
+  
+  .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+
+  h1.titulo{ 
+    margin-top: 40px;
+    margin-left: 60px;
+    font-weight: 400;
+    
+    
+  }
+
+  .btn-nuevo{
+    margin-left: 30px;
+    margin-bottom: 20px;
+  }

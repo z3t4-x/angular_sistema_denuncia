@@ -1,0 +1,28 @@
+
+<!-- login.component.html -->
+<router-outlet></router-outlet>
+<div class="example-container" *ngIf="!isLoggedIn">
+<mat-card class="login-card">
+  <mat-card-header>
+    <mat-card-title>Ingreso al Sistema</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <mat-form-field appearance="outline">
+        <mat-label>Usuario</mat-label>
+        <input matInput formControlName="cdUsuario" placeholder="Ingrese su usuario">
+        <mat-error *ngIf="loginForm.get('cdUsuario')?.hasError('required')">Campo obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input matInput formControlName="password" type="password" placeholder="Ingrese su contraseña">
+        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Campo obligatorio</mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">Iniciar sesión</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+</div>

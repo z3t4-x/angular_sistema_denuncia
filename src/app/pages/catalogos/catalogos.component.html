@@ -1,0 +1,52 @@
+
+
+<router-outlet></router-outlet>
+
+
+<div [hidden]="route.children.length !== 0">
+
+<div class="container-fluid">
+  <h1 class="titulo"><span>Listado de catálogos</span></h1>
+<div>
+  <button class="btn-nuevo " mat-raised-button color="primary"  routerLink="/catalogos/nuevo"><i class="fas fa-plus" style="margin-right: 6px;"></i>Nuevo catálogo</button>
+</div>
+
+
+
+<div class="example-container mat-elevation-z8">
+
+
+
+  <mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="idCatalogo">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.idCatalogo}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="dsNombre">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.dsNombre}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="itMantenible">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Mantenible </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.itMantenible}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+      <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button mat-button color="primary" [routerLink]="['edicion', row.idCatalogo]"><mat-icon>edit</mat-icon></button>
+        <button mat-button color="accent" (click)="eliminar(row)"><mat-icon>delete</mat-icon></button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;">
+    </mat-row>
+  </mat-table>
+
+ 
+</div>
+</div>

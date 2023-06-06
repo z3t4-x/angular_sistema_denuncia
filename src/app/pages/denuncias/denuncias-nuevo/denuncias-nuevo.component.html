@@ -1,0 +1,472 @@
+<mat-toolbar>Nueva denuncia </mat-toolbar>
+<form [formGroup]="denunciaForm" (ngSubmit)="guardarDenuncia()">
+
+  <div class="row">
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Tipo de Delito</mat-label>
+        <mat-select formControlName="tipoDelito">
+          <mat-option *ngFor="let tipo of tiposDelitos" [value]="tipo.idValor">
+            {{ tipo.dsValor }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Fecha de Ingreso de Documento</mat-label>
+        <input matInput formControlName="fcIngresoDocumento" type="date">
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Fecha de Hechos</mat-label>
+        <input matInput formControlName="fcHechos" type="date">
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Tipo de Documento</mat-label>
+        <mat-select formControlName="tipoDocumento">
+          <mat-option *ngFor="let tipoDoc of tiposDocumentos" [value]="tipoDoc.idValor">
+            {{ tipoDoc.dsValor }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  </div>
+  <div class="row">
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Nombre del Documento</mat-label>
+        <input matInput formControlName="nmDocumento">
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Auxiliar</mat-label>
+        <mat-select formControlName="auxiliar">
+          <mat-option *ngFor="let aux of auxiliares" [value]="aux.idValor">
+            {{ aux.dsValor }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-6"> <!-- Ajusta el tamaño de la columna según tus necesidades -->
+      <mat-form-field class="w-100"> <!-- Ajusta el tamaño del mat-form-field -->
+        <mat-label>Descripción de la Denuncia</mat-label>
+        <textarea matInput formControlName="dsDescripcion" rows="7"></textarea> <!-- Ajusta el tamaño del textarea con rows -->
+      </mat-form-field>
+    </div>
+    
+
+
+  </div>
+
+
+  <h3><strong> Datos del denunciante</strong></h3>
+
+
+  <form [formGroup]="denuncianteForm">
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>DNI</mat-label>
+          <input matInput formControlName="dni">
+          <button mat-icon-button matSuffix (click)="buscarDenunciante()">
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="nombre" [readonly]="true">
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Primer Apellido</mat-label>
+          <input matInput formControlName="apellido1" [readonly]="true">
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Segundo Apellido</mat-label>
+          <input matInput formControlName="apellido2" [readonly]="true">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Grado</mat-label>
+          <mat-select formControlName="grado" [disabled]="true">
+            <mat-option *ngFor="let grado of grados" [value]="grado">
+              {{ grado.dsValor }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Género</mat-label>
+          <mat-select formControlName="genero" [disabled]="true">
+            <mat-option *ngFor="let genero of generos" [value]="genero">
+              {{ genero.dsValor }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Tipo de Identificación</mat-label>
+          <mat-select formControlName="tipoIdentificacion" [disabled]="true">
+            <mat-option *ngFor="let tipoIdent of tiposIdentificacion" [value]="tipoIdent">
+              {{ tipoIdent.dsValor }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Dni</mat-label>
+          <input matInput formControlName="dni" [readonly]="true">
+        </mat-form-field>
+      </div>
+
+
+    </div>
+
+    <div class="row">
+
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Fecha de Nacimiento</mat-label>
+          <input matInput [matDatepicker]="pickerDenunciante" formControlName="fcNacimiento" type="text" [disabled]="true">
+          <mat-datepicker-toggle matSuffix [for]="pickerDenunciante"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDenunciante></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-md-9">
+        <mat-form-field>
+          <mat-label>Teléfono</mat-label>
+          <input matInput formControlName="telefono" [readonly]="true">
+        </mat-form-field>
+      </div>
+
+    </div>
+
+
+    <button mat-raised-button color="primary" class="mb-3 mt-5" (click)="agregarDenunciante()">Agregar denunciante</button>
+
+
+    <div class="container-fluid">
+      <div class="example-container mat-elevation-z8">
+
+        <mat-table [dataSource]="dataSourceDenunciantes" matSort>
+          <!-- Definición de la columna ID -->
+          <ng-container matColumnDef="orden">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>N°</mat-header-cell>
+            <mat-cell *matCellDef="let row; let i = index">{{ i + 1 }}</mat-cell>
+          </ng-container>
+
+
+
+          <ng-container matColumnDef="nombre">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.persona.nombre}}</mat-cell>
+          </ng-container>
+
+
+          <!-- Definición de la columna Apellido1 -->
+          <ng-container matColumnDef="apellido1">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Apellido1</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.persona.apellido1}}</mat-cell>
+          </ng-container>
+
+          <!-- Definición de la columna Apellido2 -->
+          <ng-container matColumnDef="apellido2">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Apellido2</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.persona.apellido2}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="grado">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Grado </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.persona.grado?.cdCodigo}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="genero">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Sexo
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.persona.genero.dsValor}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="tipoIdentificacion">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+              Identificación </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{row.persona.tipoIdentificacion.dsValor}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="dni">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Dni
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.persona.dni}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="fcNacimiento">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> F. Nac </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ formatearFechaNacimiento(row.persona.fcNacimiento) }}</mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="telefono">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.persona.telefono}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="acciones">
+            <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <button mat-button color="accent"
+                (click)="eliminarDenunciante(row.persona.idPersona)"><mat-icon>delete</mat-icon></button>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Definición de la fila -->
+          <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+        </mat-table>
+
+        <mat-paginator [length]="dataSourceDenunciantes.data.length" [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+
+      </div>
+
+    </div>
+
+  </form>
+
+
+
+  <h3 class="mt-5"><strong > Datos del denunciado</strong></h3>
+
+  <form [formGroup]="denunciadoForm">
+
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>DNI</mat-label>
+          <input matInput formControlName="dni">
+          <button mat-icon-button matSuffix (click)="buscarDenunciados()">
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="nombre" [readonly]="true">
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Primer Apellido</mat-label>
+          <input matInput formControlName="apellido1" [readonly]="true">
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Segundo Apellido</mat-label>
+          <input matInput formControlName="apellido2" [readonly]="true">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Grado</mat-label>
+          <mat-select formControlName="grado" [disabled]="true">
+            <mat-option *ngFor="let grado of grados" [value]="grado">
+              {{ grado.dsValor }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Género</mat-label>
+          <mat-select formControlName="genero" [disabled]="true">
+            <mat-option *ngFor="let genero of generos" [value]="genero">
+              {{ genero.dsValor }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Tipo de Identificación</mat-label>
+          <mat-select formControlName="tipoIdentificacion" [disabled]="true">
+            <mat-option *ngFor="let tipo of tiposIdentificacion" [value]="tipo">
+              {{ tipo.dsValor }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Dni</mat-label>
+          <input matInput formControlName="dni" [readonly]="true">
+        </mat-form-field>
+      </div>
+
+
+    </div>
+
+    <div class="row">
+
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Fecha de Nacimiento</mat-label>
+          <input matInput [matDatepicker]="pickerDenunciado" formControlName="fcNacimiento" type="text" [disabled]="true">
+          <mat-datepicker-toggle matSuffix [for]="pickerDenunciado"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDenunciado></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+
+      <div class="col-md-9">
+        <mat-form-field>
+          <mat-label>Teléfono</mat-label>
+          <input matInput formControlName="telefono" [readonly]="true">
+        </mat-form-field>
+      </div>
+
+    </div>
+
+
+    <button mat-raised-button color="primary" class="mt-5 mb-3" (click)="agregarDenunciado()">Agregar denunciando </button>
+
+    <div class="container-fluid">
+      <div class="example-container mat-elevation-z8">
+
+        <mat-table [dataSource]="dataSourceDenunciados" matSort>
+          <!-- Definición de la columna ID -->
+          <ng-container matColumnDef="orden">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>N°</mat-header-cell>
+            <mat-cell *matCellDef="let row; let i = index">{{ i + 1 }}</mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="nombre">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.persona.nombre}}</mat-cell>
+          </ng-container>
+
+
+          <!-- Definición de la columna Apellido1 -->
+          <ng-container matColumnDef="apellido1">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Apellido1</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.persona.apellido1}}</mat-cell>
+          </ng-container>
+
+          <!-- Definición de la columna Apellido2 -->
+          <ng-container matColumnDef="apellido2">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Apellido2</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.persona.apellido2}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="grado">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Grado </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.persona.grado.cdCodigo}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="genero">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Sexo
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.persona.genero.cdCodigo}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="tipoIdentificacion">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+              Identificación </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{row.persona.tipoIdentificacion.dsValor}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="dni">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Dni
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.persona.dni}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="fcNacimiento">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> F. Nac </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ formatearFechaNacimiento(row.persona.fcNacimiento) }}</mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="telefono">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.persona.telefono}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="acciones">
+            <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <button mat-button color="accent"
+                (click)="eliminarDenunciado(row.persona.idPersona)"><mat-icon>delete</mat-icon></button>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Definición de la fila -->
+          <mat-header-row *matHeaderRowDef="columnasDenunciados"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columnasDenunciados;"></mat-row>
+
+        </mat-table>
+
+        <mat-paginator [length]="dataSourceDenunciados.data.length" [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+
+      </div>
+
+    </div>
+  </form>
+
+  <div class="d-flex justify-content-end">
+    <button type="submit" class="guardarDen btn btn-success mb-5 mt-4 ml-4">Guardar Denuncia</button>
+  </div>
+  
+
+
+</form>
+
+<!--[disabled]="!tablasLlenas"-->

@@ -1,0 +1,86 @@
+
+
+
+<div class="example-container">
+    <mat-toolbar color="primary" class="example-toolbar" *ngIf="isLoggedIn()"> 
+        <button mat-icon-button (click)="toggleSidenav()">
+            <mat-icon *ngIf="sidenavOpened">menu</mat-icon>
+            <mat-icon *ngIf="!sidenavOpened">close</mat-icon>
+        </button>
+  
+        <h1 class="example-app-name">Vocalía superior</h1>
+  
+        <span class="example-spacer"></span>
+  
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+  
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item routerLink="/perfil">
+                <mat-icon>account_box</mat-icon>
+                <span>Mi Perfil</span>
+            </button>
+            <button mat-menu-item (click)="sidenavOpened = true" >
+                <mat-icon>exit_to_app</mat-icon>
+                <span (click)="logout()">Cerrar Sesión</span>
+            </button>
+        </mat-menu>
+    </mat-toolbar>
+  
+    <mat-sidenav-container class="example-sidenav-container" >
+        
+        <mat-sidenav #sidenav *ngIf="isLoggedIn()" style="width: 200px" mode="side" [opened]="sidenavOpened" (openedChange)="sidenavOpened=$event" >
+            <img src="assets/fuero_militar.png" width="128" style="margin-left: 20px">
+            
+            <button mat-menu-item   routerLink="/buscar" style="cursor: pointer">
+                <mat-icon>search</mat-icon>
+                <span>Buscar</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item  routerLink="/personas" style="cursor: pointer">
+                <mat-icon>insert_drive_file</mat-icon>
+                <span>Registrar Persona</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item  routerLink="/denuncia" style="cursor: pointer">
+                <mat-icon>insert_drive_file</mat-icon>
+                <span>Registrar Denuncia</span>
+            </button>
+
+            <button mat-menu-item  routerLink="/preliminar" style="cursor: pointer">
+                <mat-icon>insert_drive_file</mat-icon>
+                <span>Etapa preliminar</span>
+            </button>
+
+            <button mat-menu-item  routerLink="/preliminar" style="cursor: pointer">
+                <mat-icon>insert_drive_file</mat-icon>
+                <span>Etapa preparatoria</span>
+            </button>
+            
+            <mat-divider></mat-divider>            
+            <button mat-menu-item  routerLink="/catalogos" style="cursor: pointer">
+                <mat-icon>view_carousel</mat-icon>
+                <span>Registrar Catalogos</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item  routerLink="/especialidad" style="cursor: pointer">
+                <mat-icon>star_rate</mat-icon>
+                <span>Expedientes</span>
+            </button>
+            <mat-divider></mat-divider>
+ 
+            <mat-divider></mat-divider>
+            <button mat-menu-item  routerLink="/reporte" style="cursor: pointer">
+                <mat-icon>assessment</mat-icon>
+                <span>Reportes</span>
+            </button>
+        </mat-sidenav>
+        
+        <mat-sidenav-content >
+            <router-outlet></router-outlet>
+        </mat-sidenav-content>
+
+    </mat-sidenav-container>
+  
+</div>

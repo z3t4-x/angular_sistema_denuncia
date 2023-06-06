@@ -1,0 +1,105 @@
+<mat-toolbar>{{ esEdicion ? 'Modificar persona' : 'Registrar persona' }}</mat-toolbar>
+
+
+<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+<div class="container">
+    <div class="row ">
+      <div class="col-md-12 mx-auto text-center ">
+        <form [formGroup]="personaForm" (ngSubmit)="guardar()" class="mat-elevation-z8 ">
+          <div class="form-row ">
+            <div class="form-group col-md-3 mr-5">
+              <mat-form-field appearance="fill">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="nombre" required>
+              </mat-form-field>
+            </div>
+  
+            <div class="form-group col-md-3  ml-2" >
+              <mat-form-field appearance="fill">
+                <mat-label>Primer Apellido</mat-label>
+                <input matInput formControlName="apellido1" required>
+              </mat-form-field>
+            </div>
+  
+            <div class="form-group col-md-3">
+              <mat-form-field appearance="fill">
+                <mat-label>Segundo Apellido</mat-label>
+                <input matInput formControlName="apellido2" required>
+              </mat-form-field>
+            </div>
+  
+            <div class="form-group col-md-3">
+              <mat-form-field appearance="fill">
+                <mat-label>Género</mat-label>
+                <mat-select formControlName="genero" required>
+                  <mat-option *ngFor="let genero of generos" [value]="genero.idValor">{{genero.dsValor}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <mat-form-field appearance="fill">
+                <mat-label>Tipo de Identificación</mat-label>
+                <mat-select formControlName="tipoIdentificacion" required>
+                  <mat-option *ngFor="let tipo of tiposIdentificacion" [value]="tipo.idValor">{{tipo.dsValor}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+  
+            <div class="form-group col-md-3">
+              <mat-form-field appearance="fill">
+                <mat-label>DNI</mat-label>
+                <input matInput formControlName="dni" required>
+              </mat-form-field>
+            </div>
+
+            <div class="form-group col-md-3">
+              <mat-form-field appearance="fill">
+                <mat-label>Grado</mat-label>
+                <mat-select formControlName="grado" >
+                  <mat-option *ngFor="let grado of grados" [value]="grado?.idValor">{{grado?.dsValor}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+  
+ 
+  
+            <div class="form-group col-md-3">
+              <mat-form-field appearance="fill">
+                <mat-label>Fecha de Nacimiento</mat-label>
+                <input matInput formControlName="fcNacimiento" >
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <div class="form-group col-md-3">
+            <mat-form-field appearance="fill">
+                <mat-label>Teléfono</mat-label>
+          <input matInput formControlName="telefono">
+          <mat-error *ngIf="personaForm.controls['telefono']?.value && !personaForm.controls['telefono'].valid && personaForm.controls['telefono'].touched">
+            El teléfono debe tener 9 dígitos numéricos
+          </mat-error>
+            </mat-form-field>
+          </div>
+          
+
+
+          <div class="form-group col-md-12 mt-4">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!personaForm.valid" class="mr-5">
+              {{ esEdicion ? 'Modificar persona' : 'Guardar cambios' }}
+            </button>
+            
+            
+            <button mat-raised-button color="warn" type="button" (click)="cancelar()">Cancelar</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+</div>
+
+          
+  

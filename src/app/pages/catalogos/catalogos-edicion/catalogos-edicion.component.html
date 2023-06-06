@@ -1,0 +1,28 @@
+
+<mat-toolbar>Catalogos</mat-toolbar>
+
+<form class="example-container" [formGroup]="form" (ngSubmit)="operar()" #frmCatalogo="ngForm">
+
+    <div [hidden]="true">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="ID" required formControlName="idCatalogo">
+        </mat-form-field>
+    </div>
+
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="Nombre" required formControlName="dsNombre">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="Mantenible" required formControlName="itMantenible">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="frmCatalogo.invalid">
+        <mat-icon>done</mat-icon>
+        <span>Aceptar</span>
+    </button>
+    <button mat-raised-button color="accent" routerLink='/catalogos' type="button">
+        <mat-icon>close</mat-icon>
+        <span>Cancelar</span>
+    </button>
+</form>
