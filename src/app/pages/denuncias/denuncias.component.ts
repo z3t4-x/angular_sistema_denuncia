@@ -1,17 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
-import { CatalogosValores } from 'src/app/_model/catalogosValores';
 import { Denuncia } from 'src/app/_model/denuncia';
-import { DenunciaPersona } from 'src/app/_model/denunciaPersona';
-import { Persona } from 'src/app/_model/persona';
 import { DenunciaService } from 'src/app/_service/denuncia.service';
-import { PersonaService } from 'src/app/_service/persona.service';
-import 'moment-timezone'; 
-import { MatTooltipModule } from '@angular/material/tooltip';
+import 'moment-timezone';
 declare var $: any;
 
 @Component({
@@ -23,7 +17,7 @@ export class DenunciasComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
- 
+
   dataSource = new MatTableDataSource<Denuncia>([]);
   columnas: string[] = ['idDenuncia', 'nmDenuncia','estadoDenuncia', 'delito', 'fcAltaDenuncia', 'fcPlazo', 'diasRestantes',  'fcHechos', 'auxiliar', 'tipoDocumento', 'fcIngresoDocumento', 'nmDocumento', 'acciones'];
 
@@ -34,7 +28,7 @@ export class DenunciasComponent implements OnInit {
 
   constructor(
     private denunciaService: DenunciaService
-   
+
 
   ) {
     moment.tz.setDefault('America/Lima');
@@ -46,7 +40,7 @@ export class DenunciasComponent implements OnInit {
       $('[data-toggle="tooltip"]').tooltip();
     });
   }
-  
+
   listarDenuncias() {
     this.denunciaService.listarDenuncias().subscribe(denuncias => {
 
@@ -59,7 +53,7 @@ export class DenunciasComponent implements OnInit {
         const fechaActual = moment();
         const fechaPlazo = moment(denuncia.fcPlazo);
         const diasRestantes = fechaPlazo.diff(fechaActual, 'days');
-                
+
         // Agregar días restantes a la denuncia
         denuncia.diasRestantes = diasRestantes;
 
@@ -71,10 +65,10 @@ export class DenunciasComponent implements OnInit {
       this.dataSource.sort = this.sort;
     });
   }
-  
+
 
   eliminarDenuncia(denuncia: Denuncia){
-    
+
   }
 
 

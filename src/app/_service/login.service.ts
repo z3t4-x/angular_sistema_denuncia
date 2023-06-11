@@ -11,6 +11,11 @@ import { map } from 'rxjs/operators';
 export class LoginService {
 
   private baseUrl = `${environment.HOST}/auth/login`;
+  USER_NAME_SESSION_ATTRIBUTE_NAME = 'token'
+
+  public username: String;
+  public password: String;
+
 
   constructor(
     private http: HttpClient,
@@ -23,18 +28,21 @@ export class LoginService {
       cdUsuario: cdUsuario,
       password: password
     };
-  
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
      // 'Authorization': `Bearer ${localStorage.getItem('token')}`
     });
-  
+
     return this.http.post<any>(this.baseUrl, body, { headers: headers }).pipe(
       map(response => {
         // Almacenar el token en el almacenamiento local (localStorage o sessionStorage)
         const token = response.token;
-        localStorage.setItem('token', token);
-  
+        sessionStorage.setItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME, token);
+
+        this.username = cdUsuario;
+        this.password = password;
+
           // Opcional: Devolver la respuesta para un procesamiento adicional en el componente
         return response;
       })
@@ -44,14 +52,16 @@ export class LoginService {
 
   logout() {
     // Eliminar el token del almacenamiento local
-    localStorage.removeItem('token');
+    sessionStorage.removeItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME);
+    this.username = '';
+    this.password = '';
     // Redirigir al usuario a la página de login
     this.router.navigate(['/login']);
   }
 
   isAuthenticated() {
     // Verificar si el token está presente en el almacenamiento local
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME);
     return !!token;
   }
 }

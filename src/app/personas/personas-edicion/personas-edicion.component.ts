@@ -31,7 +31,7 @@ export class PersonasEdicionComponent implements OnInit {
   pageIndex: number = 0;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
- 
+
 
 
   personaForm: FormGroup;
@@ -59,25 +59,25 @@ export class PersonasEdicionComponent implements OnInit {
       apellido2: ['', Validators.required],
       grado: [''],
       genero: [''],
-      tipoIdentificacion: ['', Validators.required],  
+      tipoIdentificacion: ['', Validators.required],
       dni: ['', [Validators.required, dniValidator]],
       fcNacimiento: [''],
       telefono: [null, [Validators.nullValidator, this.telefonoValidator]],
 
     });
-    
+
   }
 
   ngOnInit(): void {
 
-    
+
     this.cargarCatalogosValores();
 
     this.activateRoute.params.subscribe(params => {
       const id = params['id'];
       if (id) {
         this.esEdicion=true;
-    
+
         this.personaService.listarPorId(id).subscribe(persona => {
 
           this.persona = persona;
@@ -95,13 +95,13 @@ export class PersonasEdicionComponent implements OnInit {
             telefono: persona.telefono
           });
         });
-        
+
             // Suscribirse a los cambios en el formulario
       this.personaForm.valueChanges.subscribe(() => {
         this.guardarHabilitado = true;
       });
       }
-      
+
     });
   }
 
@@ -143,12 +143,12 @@ export class PersonasEdicionComponent implements OnInit {
             });
           })
         ).subscribe();
-        
+
       }
     }
   }
 
-  
+
 
 
 
@@ -168,7 +168,7 @@ export class PersonasEdicionComponent implements OnInit {
       });
     }
   }
-  
+
 
 
   pageChanged(event: PageEvent) {
@@ -183,21 +183,21 @@ export class PersonasEdicionComponent implements OnInit {
   cancelar(): void {
     this.router.navigate(['/personas']);
   }
-  
 
 
-  
+
+
   telefonoValidator(control: FormControl) {
     if (control.value && (control.value.length !== 9 || !/^\d{9}$/.test(control.value))) {
       return { 'telefonoInvalido': true };
     }
     return null;
   }
-  
-  
+
+
   }
-  
-  
+
+
 export function dniValidator(control: FormControl) {
   const dni = control.value;
   if (dni && (!/^\d{8}$/.test(dni))) {

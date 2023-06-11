@@ -1,7 +1,9 @@
 
 //import { CatalogosValores } from "./catalogosValores";
 //import { CatalogosValores } from "./catalogosValores";
+import { Catalogos } from "./catalogos";
 import { DenunciaPersona } from "./denunciaPersona";
+import { Usuario } from "./usuario";
 
 
 export class Denuncia {
@@ -16,6 +18,8 @@ export class Denuncia {
     fcAltaDenuncia: string;
     fcPlazo: string;
     auxiliar: CatalogosValores;
+    fiscalia: CatalogosValores;
+    investigador: UsuarioDTO;
     dsDescripcion: string;
     tipoDocumento: CatalogosValores;
     fcIngresoDocumento: string;
@@ -25,7 +29,10 @@ export class Denuncia {
     diasRestantes: number;
     nmExpedientePreparatoria: string;
     nmExpedienteInvPreliminar: string;
-
+    fcAltaFila: string;
+    cdUsuAlta: string;
+    fcModifFila: string;
+    cdUsuModif: string;
 }
 
  export interface RequestDenuncia {
@@ -35,6 +42,8 @@ export class Denuncia {
   tipoDelito: CatalogosValores;
   fcHechos: string;
   auxiliar: CatalogosValores;
+  fiscalia: CatalogosValores;
+  mesaParte: CatalogosValores;
   dsDescripcion: string;
   tipoDocumento: CatalogosValores;
   fcIngresoDocumento: string;
@@ -42,7 +51,7 @@ export class Denuncia {
   lstDenunciantes: LstDenunciante[];
   lstDenunciados: LstDenunciado[];
  // estadoDenuncia: CatalogosValores;
- 
+
 }
 
 export interface LstDenunciado {
@@ -50,6 +59,7 @@ export interface LstDenunciado {
   genero: CatalogosValores;
   tipoIdentificacion: CatalogosValores;
   grado: CatalogosValores;
+  itBaja: string;
 }
 
 export interface LstDenunciante {
@@ -57,6 +67,7 @@ export interface LstDenunciante {
   genero: CatalogosValores;
   tipoIdentificacion: CatalogosValores;
   grado: CatalogosValores;
+  itBaja: string;
 }
 
 export interface PersonaDTO {
@@ -71,4 +82,10 @@ export interface PersonaDTO {
 
 export interface CatalogosValores {
   idValor: number;
+  dsValor: string;
+  cdCodigo: string;
+}
+
+export interface UsuarioDTO {
+  idUsuario: number;
 }

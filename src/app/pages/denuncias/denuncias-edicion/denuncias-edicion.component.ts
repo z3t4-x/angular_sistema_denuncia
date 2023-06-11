@@ -96,7 +96,7 @@ export class DenunciasEdicionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    
+
   ) {
     this.denuncia.lstDenunciantes = [];
     this.denuncia.lstDenunciados = [];
@@ -138,8 +138,18 @@ export class DenunciasEdicionComponent implements OnInit {
       dsDescripcion: new FormControl(''),
       nmDenuncia: new FormControl(''),
       estadoDenuncia: new FormControl(''),
+      cdEstadoDenuncia: new FormControl(''),
       fcAltaDenuncia: new FormControl(''),
       fcPlazo: new FormControl(''),
+
+      mesaParte: new FormControl(''),
+      investigador: new FormControl(''),
+      fiscalia: new FormControl(''),
+
+      fcAltaFila: new FormControl(''),
+      cdUsuAlta: new FormControl(''),
+      fcModifFila: new FormControl(''),
+      cdUsuModif: new FormControl(''),
     });
   }
 
@@ -206,13 +216,13 @@ export class DenunciasEdicionComponent implements OnInit {
    */
   agregarDenunciante() {
     const dni = this.denuncianteForm.get('dni')?.value;
-  
+
     if (dni) {
       // Verificar si el DNI ya existe en la lista de denunciantes
       const existeDenunciante = this.denuncia.lstDenunciantes.some(
         (denunciante) => denunciante.persona.dni === dni
       );
-  
+
       if (existeDenunciante) {
         // Mostrar mensaje de error si el DNI ya existe en la lista de denunciantes
         Swal.fire('Error', 'El DNI ya ha sido agregado como denunciante', 'error');
@@ -227,11 +237,11 @@ export class DenunciasEdicionComponent implements OnInit {
             const denunciante: any = {
               persona: persona,
             };
-  
+
             this.denuncia.lstDenunciantes.push(denunciante);
             this.dataSourceDenunciantes.data = this.denuncia.lstDenunciantes;
             console.log('Lista de DENUNCIANTES:', this.denuncia.lstDenunciantes);
-  
+
             Swal.fire('Éxito', 'Denunciante agregado correctamente', 'success');
           } else {
             // Mostrar mensaje de error si el DNI no existe en la base de datos
@@ -240,12 +250,12 @@ export class DenunciasEdicionComponent implements OnInit {
         });
       }
     }
-  
+
     this.denuncianteForm.reset();
     this.verificarTablasLlenas();
   }
-  
-  
+
+
 
   //
 
@@ -258,8 +268,9 @@ export class DenunciasEdicionComponent implements OnInit {
       (denunciante) => denunciante.persona.idPersona === idPersona
     );
     if (index !== -1) {
-      this.denuncia.lstDenunciantes.splice(index, 1);
-      this.dataSourceDenunciantes.data = this.denuncia.lstDenunciantes;
+      //this.denuncia.lstDenunciantes.splice(index, 1);
+      this.denuncia.lstDenunciantes[index].itBaja = 'N';
+      this.dataSourceDenunciantes.data = this.denuncia.lstDenunciantes.filter(x=>x.itBaja==null || x.itBaja!='N');
     }
   }
 
@@ -309,13 +320,13 @@ export class DenunciasEdicionComponent implements OnInit {
    */
   agregarDenunciado() {
     const dni = this.denunciadoForm.get('dni')?.value;
-  
+
     if (dni) {
       // Verificar si el DNI ya existe en la lista de denunciantes
       const existeDenunciante = this.denuncia.lstDenunciantes.some(
         (denunciante) => denunciante.persona.dni === dni
       );
-  
+
       if (existeDenunciante) {
         // Mostrar mensaje de error si el DNI ya existe en la lista de denunciantes
         Swal.fire('Error', 'El DNI ya ha sido agregado como denunciante', 'error');
@@ -324,7 +335,7 @@ export class DenunciasEdicionComponent implements OnInit {
         const existeDenunciado = this.denuncia.lstDenunciados.some(
           (denunciado) => denunciado.persona.dni === dni
         );
-  
+
         if (existeDenunciado) {
           // Mostrar mensaje de error si el DNI ya existe en la lista de denunciados
           Swal.fire('Error', 'El DNI ya ha sido agregado como denunciado', 'error');
@@ -336,11 +347,11 @@ export class DenunciasEdicionComponent implements OnInit {
               const denunciado: any = {
                 persona: persona,
               };
-  
+
               this.denuncia.lstDenunciados.push(denunciado);
               this.dataSourceDenunciados.data = this.denuncia.lstDenunciados;
               console.log('Lista de DENUNCIADOS:', this.denuncia.lstDenunciados);
-  
+
               Swal.fire('Éxito', 'Denunciado agregado correctamente', 'success');
             } else {
               // Mostrar mensaje de error si el DNI no existe en la base de datos
@@ -350,11 +361,11 @@ export class DenunciasEdicionComponent implements OnInit {
         }
       }
     }
-  
+
     this.denunciadoForm.reset();
     this.verificarTablasLlenas();
   }
-  
+
 
   /**
    * elimina de memoria
@@ -366,15 +377,16 @@ export class DenunciasEdicionComponent implements OnInit {
       (denunciado) => denunciado.persona.idPersona === idPersona
     );
     if (index !== -1) {
-      this.denuncia.lstDenunciados.splice(index, 1);
-      this.dataSourceDenunciados.data = this.denuncia.lstDenunciados;
+      //this.denuncia.lstDenunciados.splice(index, 1);
+      this.denuncia.lstDenunciados[index].itBaja = 'N';
+      this.dataSourceDenunciados.data = this.denuncia.lstDenunciados.filter(x=>x.itBaja==null || x.itBaja!='N');
     }
   }
 
 
   /**
-   * 
-   * @returns 
+   *
+   * @returns
    */
   crearDenunciadosForm(): FormGroup {
     return this.formBuilder.group({
@@ -391,14 +403,14 @@ export class DenunciasEdicionComponent implements OnInit {
     });
   }
 
- 
+
 
 /**
  * busca a la persona para que lo liste en la tabla de denunciadoForm
  */
   public buscarDenunciado(): void {
     const dni = this.denunciadoForm.get('dni')?.value;
-  
+
     if (dni) {
       this.personaService.buscarPorDNI(dni).subscribe(
         (persona: Persona) => {
@@ -414,7 +426,7 @@ export class DenunciasEdicionComponent implements OnInit {
           const fcNacimientoDate = persona.fcNacimiento
             ? new Date(persona.fcNacimiento)
             : null;
-  
+
           this.denunciadoForm.patchValue({
             idPersona: persona.idPersona,
             dni: persona.dni,
@@ -439,7 +451,7 @@ export class DenunciasEdicionComponent implements OnInit {
       );
     }
   }
-  
+
 
   // carga de catalogos para el formulario
   cargarCatalogosValores(): void {
@@ -478,6 +490,29 @@ export class DenunciasEdicionComponent implements OnInit {
     );
   }
 
+  private filtrarEstadoDenuncia(estadosDenuncias: CatalogosValores[]) : any {
+
+    if( this.denunciaForm.get('cdEstadoDenuncia')!=null ){
+
+      let cdEstadoDenunciaForm : any = this.denunciaForm.get('cdEstadoDenuncia');
+
+      if( cdEstadoDenunciaForm.value == 'DCIA'){//Denuncia
+        return estadosDenuncias.filter(x=>x.cdCodigo=='DCIA'||x.cdCodigo=='OTR'||x.cdCodigo=='DST'||x.cdCodigo=='PRM');
+      }else if( cdEstadoDenunciaForm.value == 'OTR'){//Otros
+        return estadosDenuncias.filter(x=>x.cdCodigo=='OTR');
+      }else if( cdEstadoDenunciaForm.value == 'DST'){//Desestimar
+        return estadosDenuncias.filter(x=>x.cdCodigo=='DST');
+      }else if( cdEstadoDenunciaForm.value == 'PRM'){//Preliminar
+        return estadosDenuncias.filter(x=>x.cdCodigo=='PRM'||x.cdCodigo=='OTR'||x.cdCodigo=='PRPA'||x.cdCodigo=='ARCH');
+      }else if( cdEstadoDenunciaForm.value == 'PRPA'){//Preparatoria
+        return estadosDenuncias.filter(x=>x.cdCodigo=='PRPA'||x.cdCodigo=='ARCH');
+      }else {
+        return [];
+      }
+
+    }
+
+  }
 
 // valida si las tablas tienen datos para guardar la denuncia
   private verificarTablasLlenas() {
@@ -502,8 +537,10 @@ export class DenunciasEdicionComponent implements OnInit {
     const datosDenunciaForm = this.denunciaForm.value;
 
     const lstDenunciados: LstDenunciado[] = this.dataSourceDenunciados.data.map(
-      ({ persona }) => {
+      ({ idDenunciaPersona, idDenuncia, persona }) => {
         return {
+          idDenunciaPersona: idDenunciaPersona,
+          idDenuncia: idDenuncia,
           personaDTO: {
             idPersona: persona.idPersona,
             nombre: persona.nombre,
@@ -529,8 +566,10 @@ export class DenunciasEdicionComponent implements OnInit {
     );
 
     const lstDenunciantes:LstDenunciante[] = this.dataSourceDenunciantes.data.map(
-      ({ persona }) => {
+      ({ idDenunciaPersona, idDenuncia, persona }) => {
         return {
+          idDenunciaPersona: idDenunciaPersona,
+          idDenuncia: idDenuncia,
           personaDTO: {
             idPersona: persona.idPersona,
             nombre: persona.nombre,
@@ -556,12 +595,16 @@ export class DenunciasEdicionComponent implements OnInit {
     );
 
     // Crear una instancia de la clase Denuncia y asignar los valores
-    const fcPlazoFormatted = moment(datosDenunciaForm.fcPlazo).format('YYYY-MM-DDTHH:mm:ss');
+    const fcPlazoFormatted = moment(datosDenunciaForm.fcPlazoOrig).format('YYYY-MM-DDTHH:mm:ss');
+    const fcAltaDenunciaFormatted = moment(datosDenunciaForm.fcAltaDenunciaOrig).format('YYYY-MM-DDTHH:mm:ss');
+
+    const fcAltaFormatted = datosDenunciaForm.fcAltaFila?moment(datosDenunciaForm.fcAltaFila).format('YYYY-MM-DDTHH:mm:ss'):'';
+    const fcModifFormatted = datosDenunciaForm.fcModifFila?moment(datosDenunciaForm.fcModifFila).format('YYYY-MM-DDTHH:mm:ss'):'';
 
     const denuncia: RequestDenunciaModif = {
 
       idDenuncia: datosDenunciaForm.idDenuncia,
-      //fcAltaDenuncia: datosDenunciaForm.fcAltaDenuncia,
+      fcAltaDenuncia: fcAltaDenunciaFormatted,
       fcHechos: datosDenunciaForm.fcHechos,
 
       auxiliar: {
@@ -574,9 +617,9 @@ export class DenunciasEdicionComponent implements OnInit {
 
       nmDenuncia:datosDenunciaForm.nmDenuncia,
 
-      fcPlazo: fcPlazoFormatted, 
+      fcPlazo: fcPlazoFormatted,
       //fcPlazo:datosDenunciaForm.fcPlazo,
-      estadoDenuncia:datosDenunciaForm.estadoDenuncia,     
+      estadoDenuncia:datosDenunciaForm.estadoDenuncia,
       dsDescripcion: datosDenunciaForm.dsDescripcion,
 
       tipoDocumento: {
@@ -585,20 +628,38 @@ export class DenunciasEdicionComponent implements OnInit {
 
       fcIngresoDocumento: datosDenunciaForm.fcIngresoDocumento,
       nmDocumento: datosDenunciaForm.nmDocumento,
-    //  nmExpedienteInvPreliminar: datosDenunciaForm.nm
+      nmExpedienteInvPreliminar: datosDenunciaForm.nmExpedienteInvPreliminar,
+      nmExpedientePreparatoria: datosDenunciaForm.nmExpedientePreparatoria,
       lstDenunciados: lstDenunciados,
       lstDenunciantes: lstDenunciantes,
+
+      mesaParte: {
+        idValor: datosDenunciaForm.mesaParte,
+      },
+
+      fiscalia: {
+        idValor: datosDenunciaForm.fiscalia,
+      },
+
+      investigador: {
+        idUsuario: datosDenunciaForm.investigador,
+      },
+
+      fcAltaFila: fcAltaFormatted,
+      cdUsuAlta: datosDenunciaForm.cdUsuAlta,
+      fcModifFila: fcModifFormatted,
+      cdUsuModif: datosDenunciaForm.cdUsuModif
     };
 
     console.log("id denuncia ===> " + denuncia.idDenuncia);
-    
+
     this.denunciaService.modificarDenuncia(denuncia).subscribe(
       response => {
         // Aquí puedes manejar la respuesta del servicio, por ejemplo, mostrar un mensaje de éxito
         Swal.fire('Éxito', 'Denuncia se ha modificado correctamente', 'success');
         // Restablecer el formulario y las listas de denunciantes y denunciados
         this.denunciaForm.reset();
-  
+
         this.router.navigate(['/denuncia']);
       },
       error => {
@@ -616,31 +677,43 @@ export class DenunciasEdicionComponent implements OnInit {
    */
   cargarDenuncia(): void {
     const id = this.route.snapshot.paramMap.get('id');
-  
+
     if (id) {
       const denunciaId = Number(id);
-  
+
       this.denunciaService.obtenerDenunciaPorId(denunciaId).subscribe(
-        (denuncia: Denuncia) => {     
+        (denuncia: Denuncia) => {
           // Asignar los valores de la denuncia al formulario
           this.denunciaForm.patchValue({
             // Asumiendo que los nombres de los campos en el formulario coinciden con los nombres de las propiedades en la clase Denuncia
             idDenuncia:denuncia.idDenuncia,
-            fcAltaDenuncia: denuncia.fcAltaDenuncia ? new Date(denuncia.fcAltaDenuncia).toISOString().substring(0, 10) : '',           
+            fcAltaDenuncia: denuncia.fcAltaDenuncia ? new Date(denuncia.fcAltaDenuncia).toISOString().substring(0, 10) : '',
+            fcAltaDenunciaOrig: denuncia.fcAltaDenuncia,
             tipoDelito: denuncia.tipoDelito? denuncia.tipoDelito.idValor:'',
             fcHechos: denuncia.fcHechos,
             nmDenuncia: denuncia.nmDenuncia,
             estadoDenuncia: denuncia.estadoDenuncia? denuncia.estadoDenuncia.idValor:'',
+            cdEstadoDenuncia: denuncia.estadoDenuncia? denuncia.estadoDenuncia.cdCodigo:'',
             fcPlazo: denuncia.fcPlazo ? new Date(denuncia.fcPlazo).toISOString().substring(0, 10) : '',
+            fcPlazoOrig: denuncia.fcPlazo,
             tipoDocumento: denuncia.tipoDocumento? denuncia.tipoDocumento.idValor:'',
             fcIngresoDocumento: denuncia.fcIngresoDocumento,
             nmDocumento: denuncia.nmDocumento,
             auxiliar: denuncia.auxiliar? denuncia.auxiliar.idValor:'',
-            dsDescripcion: denuncia.dsDescripcion       
+            fiscalia: denuncia.fiscalia? denuncia.fiscalia.idValor:'',
+            mesaParte: denuncia.mesaParte? denuncia.mesaParte.idValor:'',
+            investigador: denuncia.investigador? denuncia.investigador.idUsuario:'',
+            dsDescripcion: denuncia.dsDescripcion,
+            fcAltaFila: denuncia.fcAltaFila,
+            cdUsuAlta: denuncia.cdUsuAlta,
+            fcModifFila: denuncia.fcModifFila,
+            cdUsuModif: denuncia.cdUsuModif
           });
 
           this.cargarDenunciantes(denunciaId);
           this.cargarDenunciados(denunciaId);
+
+          this.estadosDenuncias = this.filtrarEstadoDenuncia(this.estadosDenuncias);
 
         },
         error => {
@@ -649,9 +722,9 @@ export class DenunciasEdicionComponent implements OnInit {
       );
     }
   }
-  
-  
-  
+
+
+
   cargarDenunciantes(idDenuncia: number): void {
     this.denunciaPersonaService.obtenerDenunciantes(idDenuncia)
       .pipe(
@@ -662,12 +735,10 @@ export class DenunciasEdicionComponent implements OnInit {
         })
       )
       .subscribe((denunciantes: DenunciaPersona[]) => {
-        this.dataSourceDenunciantes.data = denunciantes;
+        this.denuncia.lstDenunciantes = denunciantes;
+        this.dataSourceDenunciantes.data = denunciantes.filter(x=>x.itBaja==null || x.itBaja!='N');
+        //console.log( "==========> " +JSON.stringify(this.dataSourceDenunciantes.data));
 
-        console.log( "==========> " +JSON.stringify(this.dataSourceDenunciantes.data));
-
-
-        
       });
   }
 
@@ -682,16 +753,16 @@ export class DenunciasEdicionComponent implements OnInit {
         })
       )
       .subscribe((denunciados: DenunciaPersona[]) => {
+        this.denuncia.lstDenunciados = denunciados;
+        this.dataSourceDenunciados.data = denunciados.filter(x=>x.itBaja==null || x.itBaja!='N');
 
-        this.dataSourceDenunciados.data = denunciados;
+        //console.log(denunciados);
+        //console.log("=====> " +  this.dataSourceDenunciados.data );
 
-        console.log(denunciados);
-        console.log("=====> " +  this.dataSourceDenunciados.data );
-        
       });
   }
-  
-  
+
+
 
 
 

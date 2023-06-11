@@ -1,9 +1,10 @@
+import { Usuario } from "./usuario";
 
 
 
 export interface RequestDenunciaModif {
   idDenuncia: number;
- // fcAltaDenuncia: string; 
+  fcAltaDenuncia: string;
   tipoDelito: CatalogosValores;
   fcHechos: string;
   auxiliar: CatalogosValores;
@@ -14,13 +15,22 @@ export interface RequestDenunciaModif {
   tipoDocumento: CatalogosValores;
   fcIngresoDocumento: string;
   nmDocumento: string;
- // nmExpedientePreparatoria?: any;
- // nmExpedienteInvPreliminar?: any;
+  nmExpedientePreparatoria?: any;
+  nmExpedienteInvPreliminar?: any;
   lstDenunciantes: LstDenunciante[];
   lstDenunciados: LstDenunciado[];
+  investigador: UsuarioDTO;
+  fiscalia: CatalogosValores;
+  mesaParte: CatalogosValores;
+  fcAltaFila: string;
+  cdUsuAlta: string;
+  fcModifFila: string;
+  cdUsuModif: string;
 }
 
 export interface LstDenunciado {
+    idDenunciaPersona: number;
+    idDenuncia: number;
     personaDTO: PersonaDTO;
     genero: CatalogosValores;
     tipoIdentificacion: CatalogosValores;
@@ -28,6 +38,8 @@ export interface LstDenunciado {
 }
 
 export interface LstDenunciante {
+    idDenunciaPersona: number;
+    idDenuncia: number;
     personaDTO: PersonaDTO;
     genero: CatalogosValores;
     tipoIdentificacion: CatalogosValores;
@@ -46,4 +58,8 @@ export interface PersonaDTO {
 
 export interface CatalogosValores {
   idValor: number;
+}
+
+export interface UsuarioDTO {
+  idUsuario: number;
 }

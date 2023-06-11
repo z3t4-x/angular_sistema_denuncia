@@ -25,7 +25,6 @@ import {
   LstDenunciado,
   RequestDenuncia,
 } from 'src/app/_model/denuncia';
-import { PersonaDTO } from 'src/app/_dto/personaDTO';
 
 @Component({
   selector: 'app-denuncias-nuevo',
@@ -201,13 +200,13 @@ export class DenunciasNuevoComponent implements OnInit {
    */
   agregarDenunciante() {
     const dni = this.denuncianteForm.get('dni')?.value;
-  
+
     if (dni) {
       // Verificar si el DNI ya existe en la lista de denunciantes
       const existeDenunciante = this.denuncia.lstDenunciantes.some(
         (denunciante) => denunciante.persona.dni === dni
       );
-  
+
       if (existeDenunciante) {
         // Mostrar mensaje de error si el DNI ya existe en la lista de denunciantes
         Swal.fire('Error', 'El DNI ya ha sido agregado como denunciante', 'error');
@@ -222,11 +221,11 @@ export class DenunciasNuevoComponent implements OnInit {
             const denunciante: any = {
               persona: persona,
             };
-  
+
             this.denuncia.lstDenunciantes.push(denunciante);
             this.dataSourceDenunciantes.data = this.denuncia.lstDenunciantes;
             console.log('Lista de DENUNCIANTES:', this.denuncia.lstDenunciantes);
-  
+
             Swal.fire('Éxito', 'Denunciante agregado correctamente', 'success');
           } else {
             // Mostrar mensaje de error si el DNI no existe en la base de datos
@@ -235,12 +234,12 @@ export class DenunciasNuevoComponent implements OnInit {
         });
       }
     }
-  
+
     this.denuncianteForm.reset();
     this.verificarTablasLlenas();
   }
-  
-  
+
+
 
   //
 
@@ -304,13 +303,13 @@ export class DenunciasNuevoComponent implements OnInit {
    */
   agregarDenunciado() {
     const dni = this.denunciadoForm.get('dni')?.value;
-  
+
     if (dni) {
       // Verificar si el DNI ya existe en la lista de denunciantes
       const existeDenunciante = this.denuncia.lstDenunciantes.some(
         (denunciante) => denunciante.persona.dni === dni
       );
-  
+
       if (existeDenunciante) {
         // Mostrar mensaje de error si el DNI ya existe en la lista de denunciantes
         Swal.fire('Error', 'El DNI ya ha sido agregado como denunciante', 'error');
@@ -319,7 +318,7 @@ export class DenunciasNuevoComponent implements OnInit {
         const existeDenunciado = this.denuncia.lstDenunciados.some(
           (denunciado) => denunciado.persona.dni === dni
         );
-  
+
         if (existeDenunciado) {
           // Mostrar mensaje de error si el DNI ya existe en la lista de denunciados
           Swal.fire('Error', 'El DNI ya ha sido agregado como denunciado', 'error');
@@ -331,11 +330,11 @@ export class DenunciasNuevoComponent implements OnInit {
               const denunciado: any = {
                 persona: persona,
               };
-  
+
               this.denuncia.lstDenunciados.push(denunciado);
               this.dataSourceDenunciados.data = this.denuncia.lstDenunciados;
-              console.log('Lista de DENUNCIADOS:', this.denuncia.lstDenunciados);
-  
+              //console.log('Lista de DENUNCIADOS:', this.denuncia.lstDenunciados);
+
               Swal.fire('Éxito', 'Denunciado agregado correctamente', 'success');
             } else {
               // Mostrar mensaje de error si el DNI no existe en la base de datos
@@ -345,11 +344,11 @@ export class DenunciasNuevoComponent implements OnInit {
         }
       }
     }
-  
+
     this.denunciadoForm.reset();
     this.verificarTablasLlenas();
   }
-  
+
 
   /**
    * elimina de memoria
@@ -381,12 +380,12 @@ export class DenunciasNuevoComponent implements OnInit {
     });
   }
 
- 
+
 
 
   public buscarDenunciado(): void {
     const dni = this.denunciadoForm.get('dni')?.value;
-  
+
     if (dni) {
       this.personaService.buscarPorDNI(dni).subscribe(
         (persona: Persona) => {
@@ -402,7 +401,7 @@ export class DenunciasNuevoComponent implements OnInit {
           const fcNacimientoDate = persona.fcNacimiento
             ? new Date(persona.fcNacimiento)
             : null;
-  
+
           this.denunciadoForm.patchValue({
             idPersona: persona.idPersona,
             dni: persona.dni,
@@ -427,7 +426,7 @@ export class DenunciasNuevoComponent implements OnInit {
       );
     }
   }
-  
+
 
   // carga de catalogos
   cargarCatalogosValores(): void {
@@ -505,13 +504,20 @@ export class DenunciasNuevoComponent implements OnInit {
           },
           genero: {
             idValor: <any>persona.genero,
+            dsValor: '',
+            cdCodigo: '',
           },
           tipoIdentificacion: {
             idValor: <any>persona.tipoIdentificacion,
+            dsValor: '',
+            cdCodigo: '',
           },
           grado: {
             idValor: <any>persona.grado,
+            dsValor: '',
+            cdCodigo: '',
           },
+          itBaja: 'N'
         };
       }
     );
@@ -532,13 +538,20 @@ export class DenunciasNuevoComponent implements OnInit {
           },
           genero: {
             idValor: <any>persona.genero,
+            dsValor: '',
+            cdCodigo: '',
           },
           tipoIdentificacion: {
             idValor: <any>persona.tipoIdentificacion,
+            dsValor: '',
+            cdCodigo: '',
           },
           grado: {
             idValor: <any>persona.grado,
+            dsValor: '',
+            cdCodigo: '',
           },
+          itBaja: 'N'
         };
       }
     );
@@ -547,14 +560,30 @@ export class DenunciasNuevoComponent implements OnInit {
     const denuncia: RequestDenuncia = {
       tipoDelito: {
         idValor: datosDenunciaForm.tipoDelito,
+        dsValor: '',
+        cdCodigo: '',
       },
       fcHechos: datosDenunciaForm.fcHechos,
       auxiliar: {
         idValor: datosDenunciaForm.auxiliar,
+        dsValor: '',
+        cdCodigo: '',
+      },
+      fiscalia: {
+        idValor: datosDenunciaForm.fiscalia,
+        dsValor: '',
+        cdCodigo: '',
+      },
+      mesaParte: {
+        idValor: datosDenunciaForm.mesaParte,
+        dsValor: '',
+        cdCodigo: '',
       },
       dsDescripcion: datosDenunciaForm.dsDescripcion,
       tipoDocumento: {
         idValor: datosDenunciaForm.tipoDocumento,
+        dsValor: '',
+        cdCodigo: '',
       },
       fcIngresoDocumento: datosDenunciaForm.fcIngresoDocumento,
       nmDocumento: datosDenunciaForm.nmDocumento,
@@ -577,7 +606,7 @@ export class DenunciasNuevoComponent implements OnInit {
        console.log("datasourceDENUNCIANTES ==> " , this.dataSourceDenunciantes.data);
         this.dataSourceDenunciantes.data = this.denuncia.lstDenunciantes;
         this.dataSourceDenunciados.data = this.denuncia.lstDenunciados;
-  
+
         console.log("datasourceDENUNCIADOS ==> " ,this.dataSourceDenunciados.data);
         this.router.navigate(['/denuncia']);
       },

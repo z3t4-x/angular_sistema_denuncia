@@ -17,13 +17,13 @@ const routes: Routes = [
 
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirige a LoginComponent
- 
+  {path: 'logout', component: LoginComponent},
 
   {  path: 'catalogos', component: CatalogosComponent, children: [
     { path: 'nuevo', component: CatalogosEdicionComponent },
     { path: 'edicion/:id', component: CatalogosEdicionComponent }
   ]
-  
+
 },
 {
     path: 'personas', component: PersonasComponent

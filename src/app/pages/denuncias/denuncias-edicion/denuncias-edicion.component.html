@@ -1,4 +1,4 @@
-<mat-toolbar>Nueva denuncia </mat-toolbar>
+<mat-toolbar>Editar denuncia </mat-toolbar>
 <form [formGroup]="denunciaForm" (ngSubmit)="modificarDenuncia()">
 
 
@@ -7,12 +7,12 @@
     <div class="row">
         <div class="col">
             <mat-form-field>
-              <mat-label>N° denuncia</mat-label>          
-                <input matInput formControlName="nmDenuncia" readonly="true">          
+              <mat-label>N° denuncia</mat-label>
+                <input matInput formControlName="nmDenuncia" readonly="true">
             </mat-form-field>
         </div>
-    
-    
+
+
         <div class="col">
             <mat-form-field>
               <mat-label>Estado</mat-label>
@@ -23,17 +23,17 @@
               </mat-select>
             </mat-form-field>
         </div>
-    
+
         <div class="col">
             <mat-form-field>
               <mat-label>Fecha alta</mat-label>
-              <input type="date" matInput formControlName="fcAltaDenuncia" readonly="true">            
+              <input type="date" matInput formControlName="fcAltaDenuncia" readonly="true">
             </mat-form-field>
         </div>
 
         <div class="col">
             <mat-form-field>
-              <mat-label>Fecha plazo</mat-label>              
+              <mat-label>Fecha plazo</mat-label>
               <input matInput formControlName="fcPlazo" type="date">
             </mat-form-field>
         </div>
@@ -103,7 +103,7 @@
         <textarea matInput formControlName="dsDescripcion" rows="7"></textarea> <!-- Ajusta el tamaño del textarea con rows -->
       </mat-form-field>
     </div>
-    
+
 
 
   </div>
@@ -226,7 +226,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
             <mat-cell *matCellDef="let row">{{row.persona.nombre}}</mat-cell>
           </ng-container>
-    
+
 
 
           <!-- Definición de la columna Apellido1 -->
@@ -504,7 +504,7 @@
   <div class="d-flex justify-content-end">
     <button type="submit" class="guardarDen btn btn-success mb-5 mt-4 ml-4">Modificar denuncia</button>
   </div>
-  
+
 
 
 </form>
