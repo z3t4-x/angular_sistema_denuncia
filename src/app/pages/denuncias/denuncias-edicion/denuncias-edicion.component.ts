@@ -260,7 +260,7 @@ export class DenunciasEdicionComponent implements OnInit {
   //
 
   /**
-   * remover denunciante
+   * remover denunciante en vista
    * @param idPersona
    */
   eliminarDenunciante(idPersona: number) {
@@ -269,10 +269,25 @@ export class DenunciasEdicionComponent implements OnInit {
     );
     if (index !== -1) {
       //this.denuncia.lstDenunciantes.splice(index, 1);
-      this.denuncia.lstDenunciantes[index].itBaja = 'N';
-      this.dataSourceDenunciantes.data = this.denuncia.lstDenunciantes.filter(x=>x.itBaja==null || x.itBaja!='N');
+      this.denuncia.lstDenunciantes[index].itBaja = 'S';
+      this.dataSourceDenunciantes.data = this.denuncia.lstDenunciantes;
     }
   }
+
+/**
+   * revertir remover denunciante en vista
+   * @param idPersona
+   */
+revertirEliminarDenunciante(idPersona: number) {
+  const index = this.denuncia.lstDenunciantes.findIndex(
+    (denunciante) => denunciante.persona.idPersona === idPersona
+  );
+  if (index !== -1) {
+    //this.denuncia.lstDenunciantes.splice(index, 1);
+    this.denuncia.lstDenunciantes[index].itBaja = 'N';
+    this.dataSourceDenunciantes.data = this.denuncia.lstDenunciantes;
+  }
+}
 
   //########################################
   //##          DATOS DENUNCIADOS
@@ -368,7 +383,7 @@ export class DenunciasEdicionComponent implements OnInit {
 
 
   /**
-   * elimina de memoria
+   * elimina de memoria en vista
    * @param denunciado
    */
 
@@ -378,11 +393,27 @@ export class DenunciasEdicionComponent implements OnInit {
     );
     if (index !== -1) {
       //this.denuncia.lstDenunciados.splice(index, 1);
-      this.denuncia.lstDenunciados[index].itBaja = 'N';
-      this.dataSourceDenunciados.data = this.denuncia.lstDenunciados.filter(x=>x.itBaja==null || x.itBaja!='N');
+      this.denuncia.lstDenunciados[index].itBaja = 'S';
+      this.dataSourceDenunciados.data = this.denuncia.lstDenunciados;
     }
   }
 
+
+/**
+   * revertir elimina de memoria en vista
+   * @param denunciado
+   */
+
+revertirEliminarDenunciado(idPersona: number) {
+  const index = this.denuncia.lstDenunciados.findIndex(
+    (denunciado) => denunciado.persona.idPersona === idPersona
+  );
+  if (index !== -1) {
+    //this.denuncia.lstDenunciados.splice(index, 1);
+    this.denuncia.lstDenunciados[index].itBaja = 'N';
+    this.dataSourceDenunciados.data = this.denuncia.lstDenunciados;
+  }
+}
 
   /**
    *
@@ -537,7 +568,7 @@ export class DenunciasEdicionComponent implements OnInit {
     const datosDenunciaForm = this.denunciaForm.value;
 
     const lstDenunciados: LstDenunciado[] = this.dataSourceDenunciados.data.map(
-      ({ idDenunciaPersona, idDenuncia, persona }) => {
+      ({ idDenunciaPersona, idDenuncia, persona, itBaja }) => {
         return {
           idDenunciaPersona: idDenunciaPersona,
           idDenuncia: idDenuncia,
@@ -561,12 +592,13 @@ export class DenunciasEdicionComponent implements OnInit {
           grado: {
             idValor: <any>persona.grado,
           },
+          itBaja: itBaja
         };
       }
     );
 
     const lstDenunciantes:LstDenunciante[] = this.dataSourceDenunciantes.data.map(
-      ({ idDenunciaPersona, idDenuncia, persona }) => {
+      ({ idDenunciaPersona, idDenuncia, persona, itBaja }) => {
         return {
           idDenunciaPersona: idDenunciaPersona,
           idDenuncia: idDenuncia,
@@ -590,6 +622,7 @@ export class DenunciasEdicionComponent implements OnInit {
           grado: {
             idValor: <any>persona.grado,
           },
+          itBaja: itBaja,
         };
       }
     );
@@ -735,8 +768,11 @@ export class DenunciasEdicionComponent implements OnInit {
         })
       )
       .subscribe((denunciantes: DenunciaPersona[]) => {
+
+        denunciantes.forEach(e=>e.itBaja='N');
+
         this.denuncia.lstDenunciantes = denunciantes;
-        this.dataSourceDenunciantes.data = denunciantes.filter(x=>x.itBaja==null || x.itBaja!='N');
+        this.dataSourceDenunciantes.data = denunciantes;
         //console.log( "==========> " +JSON.stringify(this.dataSourceDenunciantes.data));
 
       });
@@ -753,8 +789,11 @@ export class DenunciasEdicionComponent implements OnInit {
         })
       )
       .subscribe((denunciados: DenunciaPersona[]) => {
+
+        denunciados.forEach(e=>e.itBaja='N');
+
         this.denuncia.lstDenunciados = denunciados;
-        this.dataSourceDenunciados.data = denunciados.filter(x=>x.itBaja==null || x.itBaja!='N');
+        this.dataSourceDenunciados.data = denunciados;
 
         //console.log(denunciados);
         //console.log("=====> " +  this.dataSourceDenunciados.data );

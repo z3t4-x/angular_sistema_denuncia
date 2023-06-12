@@ -217,14 +217,14 @@
           <!-- Definición de la columna ID -->
           <ng-container matColumnDef="orden">
             <mat-header-cell *matHeaderCellDef mat-sort-header>N°</mat-header-cell>
-            <mat-cell *matCellDef="let row; let i = index">{{ i + 1 }}</mat-cell>
+            <mat-cell *matCellDef="let row; let i = index" [ngClass]="row.itBaja=='S'?'filaRoja':''" >{{ i + 1 }}</mat-cell>
           </ng-container>
 
 
 
           <ng-container matColumnDef="nombre">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.persona.nombre}}</mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''">{{row.persona.nombre}}</mat-cell>
           </ng-container>
 
 
@@ -232,61 +232,60 @@
           <!-- Definición de la columna Apellido1 -->
           <ng-container matColumnDef="apellido1">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Apellido1</mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.persona.apellido1}}</mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''">{{row.persona.apellido1}}</mat-cell>
           </ng-container>
 
           <!-- Definición de la columna Apellido2 -->
           <ng-container matColumnDef="apellido2">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Apellido2</mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.persona.apellido2}}</mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''">{{row.persona.apellido2}}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="grado">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Grado </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.persona.grado?.cdCodigo}} </mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''"> {{row.persona.grado?.cdCodigo}} </mat-cell>
           </ng-container>
 
 
           <ng-container matColumnDef="genero">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Sexo
             </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.persona.genero.dsValor}}
-            </mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''">{{row.persona.genero.dsValor}}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="tipoIdentificacion">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
               Identificación </mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              {{row.persona.tipoIdentificacion.dsValor}} </mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''">{{row.persona.tipoIdentificacion.dsValor}}</mat-cell>
           </ng-container>
-
 
           <ng-container matColumnDef="dni">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Dni
             </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.persona.dni}} </mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''"> {{row.persona.dni}} </mat-cell>
           </ng-container>
 
 
           <ng-container matColumnDef="fcNacimiento">
             <mat-header-cell *matHeaderCellDef mat-sort-header> F. Nac </mat-header-cell>
-            <mat-cell *matCellDef="let row">{{ formatearFechaNacimiento(row.persona.fcNacimiento) }}</mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''">{{ formatearFechaNacimiento(row.persona.fcNacimiento) }}</mat-cell>
           </ng-container>
 
 
           <ng-container matColumnDef="telefono">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono
             </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.persona.telefono}} </mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''"> {{row.persona.telefono}} </mat-cell>
           </ng-container>
 
 
           <ng-container matColumnDef="acciones">
             <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
             <mat-cell *matCellDef="let row">
-              <button mat-button color="accent"
+              <button mat-button color="accent" *ngIf="row.itBaja=='N'"
                 (click)="eliminarDenunciante(row.persona.idPersona)"><mat-icon>delete</mat-icon></button>
+              <button mat-button color="accent" *ngIf="row.itBaja=='S'"
+                (click)="revertirEliminarDenunciante(row.persona.idPersona)"><mat-icon>undo</mat-icon></button>
             </mat-cell>
           </ng-container>
 
@@ -298,9 +297,8 @@
         <mat-paginator [length]="dataSourceDenunciantes.data.length" [pageSize]="10"
           [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 
-
       </div>
-
+      <span><b>* Los registros en rojo serán eliminados al guardar los cambios.</b></span>
     </div>
 
   </form>
@@ -415,13 +413,13 @@
           <!-- Definición de la columna ID -->
           <ng-container matColumnDef="orden">
             <mat-header-cell *matHeaderCellDef mat-sort-header>N°</mat-header-cell>
-            <mat-cell *matCellDef="let row; let i = index">{{ i + 1 }}</mat-cell>
+            <mat-cell *matCellDef="let row; let i = index" [ngClass]="row.itBaja=='S'?'filaRoja':''" >{{ i + 1 }}</mat-cell>
           </ng-container>
 
 
           <ng-container matColumnDef="nombre">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.persona.nombre}}</mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''" >{{row.persona.nombre}}</mat-cell>
           </ng-container>
 
 
@@ -434,26 +432,26 @@
           <!-- Definición de la columna Apellido2 -->
           <ng-container matColumnDef="apellido2">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Apellido2</mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.persona.apellido2}}</mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''" >{{row.persona.apellido2}}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="grado">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Grado </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.persona.grado.cdCodigo}} </mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''" > {{row.persona.grado.cdCodigo}} </mat-cell>
           </ng-container>
 
 
           <ng-container matColumnDef="genero">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Sexo
             </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.persona.genero.cdCodigo}}
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''" > {{row.persona.genero.cdCodigo}}
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="tipoIdentificacion">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
               Identificación </mat-header-cell>
-            <mat-cell *matCellDef="let row">
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''" >
               {{row.persona.tipoIdentificacion.dsValor}} </mat-cell>
           </ng-container>
 
@@ -461,28 +459,30 @@
           <ng-container matColumnDef="dni">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Dni
             </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.persona.dni}} </mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''" > {{row.persona.dni}} </mat-cell>
           </ng-container>
 
 
           <ng-container matColumnDef="fcNacimiento">
             <mat-header-cell *matHeaderCellDef mat-sort-header> F. Nac </mat-header-cell>
-            <mat-cell *matCellDef="let row">{{ formatearFechaNacimiento(row.persona.fcNacimiento) }}</mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''" >{{ formatearFechaNacimiento(row.persona.fcNacimiento) }}</mat-cell>
           </ng-container>
 
 
           <ng-container matColumnDef="telefono">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono
             </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.persona.telefono}} </mat-cell>
+            <mat-cell *matCellDef="let row" [ngClass]="row.itBaja=='S'?'filaRoja':''" > {{row.persona.telefono}} </mat-cell>
           </ng-container>
 
 
           <ng-container matColumnDef="acciones">
             <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
             <mat-cell *matCellDef="let row">
-              <button mat-button color="accent"
+              <button mat-button color="accent" *ngIf="row.itBaja=='N'"
                 (click)="eliminarDenunciado(row.persona.idPersona)"><mat-icon>delete</mat-icon></button>
+              <button mat-button color="accent" *ngIf="row.itBaja=='S'"
+                (click)="revertirEliminarDenunciado(row.persona.idPersona)"><mat-icon>undo</mat-icon></button>
             </mat-cell>
           </ng-container>
 
@@ -497,6 +497,8 @@
 
 
       </div>
+
+      <span><b>* Los registros en rojo serán eliminados al guardar los cambios.</b></span>
 
     </div>
   </form>

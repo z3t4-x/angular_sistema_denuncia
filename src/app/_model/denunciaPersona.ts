@@ -8,5 +8,6 @@ export class DenunciaPersona{
     idDenuncia: number;
     fcAlta: Date;
     tipoPersona: CatalogosValores[];
-    itBaja: string;
+    itBaja: string = 'N';
+
 }
