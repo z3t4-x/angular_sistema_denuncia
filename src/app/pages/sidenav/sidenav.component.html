@@ -9,15 +9,15 @@
           <mat-icon>insert_drive_file</mat-icon>
           <span>Registrar Persona</span>
         </a>
-        <a mat-list-item routerLink="/denuncia">
+        <a mat-list-item (click)="redireccionarListaDenuncia('DCIA')">
           <mat-icon>insert_drive_file</mat-icon>
           <span>Registrar Denuncia</span>
         </a>
-        <a mat-list-item routerLink="/preliminar">
+        <a mat-list-item (click)="redireccionarListaDenuncia('PRM')">
           <mat-icon>insert_drive_file</mat-icon>
           <span>Etapa preliminar</span>
         </a>
-        <a mat-list-item routerLink="/preparatoria">
+        <a mat-list-item (click)="redireccionarListaDenuncia('PRPA')">
           <mat-icon>insert_drive_file</mat-icon>
           <span>Etapa preparatoria</span>
         </a>
@@ -37,5 +37,4 @@
     </mat-sidenav>
 
   </mat-sidenav-container>
-  
-  
+

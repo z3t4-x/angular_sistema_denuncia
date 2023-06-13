@@ -236,6 +236,7 @@ export class DenunciasEdicionComponent implements OnInit {
             // Agregar el denunciante a la lista
             const denunciante: any = {
               persona: persona,
+              itBaja: 'N'
             };
 
             this.denuncia.lstDenunciantes.push(denunciante);
@@ -361,6 +362,7 @@ revertirEliminarDenunciante(idPersona: number) {
               // Agregar el denunciado a la lista
               const denunciado: any = {
                 persona: persona,
+                itBaja: 'N'
               };
 
               this.denuncia.lstDenunciados.push(denunciado);
@@ -628,16 +630,13 @@ revertirEliminarDenunciado(idPersona: number) {
     );
 
     // Crear una instancia de la clase Denuncia y asignar los valores
-    const fcPlazoFormatted = moment(datosDenunciaForm.fcPlazoOrig).format('YYYY-MM-DDTHH:mm:ss');
-    const fcAltaDenunciaFormatted = moment(datosDenunciaForm.fcAltaDenunciaOrig).format('YYYY-MM-DDTHH:mm:ss');
-
     const fcAltaFormatted = datosDenunciaForm.fcAltaFila?moment(datosDenunciaForm.fcAltaFila).format('YYYY-MM-DDTHH:mm:ss'):'';
     const fcModifFormatted = datosDenunciaForm.fcModifFila?moment(datosDenunciaForm.fcModifFila).format('YYYY-MM-DDTHH:mm:ss'):'';
 
     const denuncia: RequestDenunciaModif = {
 
       idDenuncia: datosDenunciaForm.idDenuncia,
-      fcAltaDenuncia: fcAltaDenunciaFormatted,
+      fcAltaDenuncia: datosDenunciaForm.fcAltaDenuncia,
       fcHechos: datosDenunciaForm.fcHechos,
 
       auxiliar: {
@@ -650,8 +649,7 @@ revertirEliminarDenunciado(idPersona: number) {
 
       nmDenuncia:datosDenunciaForm.nmDenuncia,
 
-      fcPlazo: fcPlazoFormatted,
-      //fcPlazo:datosDenunciaForm.fcPlazo,
+      fcPlazo: datosDenunciaForm.fcPlazo,
       estadoDenuncia:datosDenunciaForm.estadoDenuncia,
       dsDescripcion: datosDenunciaForm.dsDescripcion,
 
@@ -683,8 +681,6 @@ revertirEliminarDenunciado(idPersona: number) {
       fcModifFila: fcModifFormatted,
       cdUsuModif: datosDenunciaForm.cdUsuModif
     };
-
-    console.log("id denuncia ===> " + denuncia.idDenuncia);
 
     this.denunciaService.modificarDenuncia(denuncia).subscribe(
       response => {
@@ -720,15 +716,13 @@ revertirEliminarDenunciado(idPersona: number) {
           this.denunciaForm.patchValue({
             // Asumiendo que los nombres de los campos en el formulario coinciden con los nombres de las propiedades en la clase Denuncia
             idDenuncia:denuncia.idDenuncia,
-            fcAltaDenuncia: denuncia.fcAltaDenuncia ? new Date(denuncia.fcAltaDenuncia).toISOString().substring(0, 10) : '',
-            fcAltaDenunciaOrig: denuncia.fcAltaDenuncia,
+            fcAltaDenuncia: denuncia.fcAltaDenuncia,
             tipoDelito: denuncia.tipoDelito? denuncia.tipoDelito.idValor:'',
             fcHechos: denuncia.fcHechos,
             nmDenuncia: denuncia.nmDenuncia,
             estadoDenuncia: denuncia.estadoDenuncia? denuncia.estadoDenuncia.idValor:'',
             cdEstadoDenuncia: denuncia.estadoDenuncia? denuncia.estadoDenuncia.cdCodigo:'',
-            fcPlazo: denuncia.fcPlazo ? new Date(denuncia.fcPlazo).toISOString().substring(0, 10) : '',
-            fcPlazoOrig: denuncia.fcPlazo,
+            fcPlazo: denuncia.fcPlazo,
             tipoDocumento: denuncia.tipoDocumento? denuncia.tipoDocumento.idValor:'',
             fcIngresoDocumento: denuncia.fcIngresoDocumento,
             nmDocumento: denuncia.nmDocumento,

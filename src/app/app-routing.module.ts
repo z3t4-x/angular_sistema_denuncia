@@ -45,7 +45,13 @@ const routes: Routes = [
 {
   path: 'denunciaEditar/:id', component: DenunciasEdicionComponent
 },
-
+{
+  path: 'preliminar', component: DenunciasComponent
+},
+{
+  path: 'preparatoria', component: DenunciasComponent
+}
+/*
 {
   path: 'preliminar', component: PreliminarComponent
 },
@@ -59,7 +65,7 @@ const routes: Routes = [
 },
 {
   path: 'preparatoriaEditar:id', component: PreparatoriaEdicionComponent
-},
+},*/
 
 ];
 

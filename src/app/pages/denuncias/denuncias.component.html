@@ -1,14 +1,18 @@
 <router-outlet></router-outlet>
 
+<div class="container-fluid p-2">
 
-<div>
+  <div *ngIf="estadoFiltro=='DCIA'">
     <button class="btn-nuevo " mat-raised-button color="primary"
         routerLink="/denunciaNuevo"><i class="fas fa-plus"
             style="margin-right: 6px;"></i>Registrar denuncia</button>
-</div>
+  </div>
 
-<div class="container-fluid">
-    <mat-toolbar>Listado de denuncia</mat-toolbar>
+    <mat-toolbar>
+      <span *ngIf="estadoFiltro=='DCIA'">Listado de denuncia</span>
+      <span *ngIf="estadoFiltro=='PRM'">Listado de denuncia (preliminar)</span>
+      <span *ngIf="estadoFiltro=='PRPA'">Listado de denuncia (preparatoria)</span>
+    </mat-toolbar>
     <div class="example-container mat-elevation-z8">
 
         <mat-table [dataSource]="dataSource" matSort>
@@ -18,8 +22,8 @@
                 <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
                 <mat-cell *matCellDef="let row">{{row.idDenuncia}}</mat-cell>
               </ng-container>
-              
-              
+
+
 
               <ng-container matColumnDef="nmDenuncia">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>N° denuncia</mat-header-cell>
@@ -31,8 +35,8 @@
                 <mat-header-cell *matHeaderCellDef mat-sort-header> Estado </mat-header-cell>
                 <mat-cell *matCellDef="let row" style="font-weight: bold; color: #3f51b5;"> {{row.estadoDenuncia.dsValor}} </mat-cell>
               </ng-container>
-              
-              
+
+
 
             <!-- Definición de la columna Apellido1 -->
             <ng-container matColumnDef="delito">
@@ -58,14 +62,14 @@
                     <span class="badge rounded-pill bg-{{ denuncia.diasRestantes > 10 ? 'success' : denuncia.diasRestantes > 5 ? 'warning' : 'danger' }}"
                         data-bs-toggle="tooltip" data-bs-placement="top"
                         [title]="'Faltan ' + denuncia.diasRestantes + ' días para que el investigador revise la denuncia'">
-                        {{ denuncia.diasRestantes }}  días 
+                        {{ denuncia.diasRestantes }}  días
                     </span>
                 </mat-cell>
-            </ng-container>         
+            </ng-container>
 
 
-              
-              
+
+
 
             <ng-container matColumnDef="fcHechos">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> F. Hechos

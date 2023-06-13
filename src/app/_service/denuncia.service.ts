@@ -19,6 +19,14 @@ export class DenunciaService {
     return this.http.get<Denuncia[]>(`${this.baseUrl}`);
   }
 
+  listarPreliminar(): Observable<Denuncia[]> {
+    return this.http.get<Denuncia[]>(`${this.baseUrl}/preliminar`);
+  }
+
+  listarPreparatoria(): Observable<Denuncia[]> {
+    return this.http.get<Denuncia[]>(`${this.baseUrl}/preparatoria`);
+  }
+
   obtenerDenunciaPorId(id: number): Observable<Denuncia> {
     return this.http.get<Denuncia>(`${this.baseUrl}/${id}`);
   }
