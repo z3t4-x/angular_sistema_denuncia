@@ -10,8 +10,8 @@
 
     <mat-toolbar>
       <span *ngIf="estadoFiltro=='DCIA'">Listado de denuncia</span>
-      <span *ngIf="estadoFiltro=='PRM'">Listado de denuncia (preliminar)</span>
-      <span *ngIf="estadoFiltro=='PRPA'">Listado de denuncia (preparatoria)</span>
+      <span *ngIf="estadoFiltro=='PRM'">Etapa preliminar </span>
+      <span *ngIf="estadoFiltro=='PRPA'">Etapa preparatoria</span>
     </mat-toolbar>
     <div class="example-container mat-elevation-z8">
 
@@ -26,8 +26,8 @@
 
 
               <ng-container matColumnDef="nmDenuncia">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>N° denuncia</mat-header-cell>
-                <mat-cell *matCellDef="let row">{{row.nmDenuncia}}</mat-cell>
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{estadoFiltro === 'DCIA' ? 'N° Denuncia' : estadoFiltro === 'PRM' ? 'N° Preliminar' : 'N° Preparatoria'}}</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{estadoFiltro === 'DCIA' ? row.nmDenuncia : estadoFiltro === 'PRM' ? row.nmExpedienteInvPreliminar : row.nmExpedientePreparatoria}}</mat-cell>
               </ng-container>
 
 

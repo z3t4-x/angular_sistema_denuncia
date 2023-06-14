@@ -30,6 +30,8 @@ import { MatCardModule } from '@angular/material/card';
 import { SidenavComponent } from './pages/sidenav/sidenav.component';
 import { ToolbarComponent } from './pages/toolbar/toolbar.component';
 import { AuthInterceptor } from './auth.interceptor';
+import { UsuarioNuevoComponent } from './pages/usuario/usuario-nuevo/usuario-nuevo.component';
+
 
 
 @NgModule({
@@ -46,13 +48,15 @@ import { AuthInterceptor } from './auth.interceptor';
     PreliminarComponent,
     PreliminarEdicionComponent,
     UsuarioComponent,
+    UsuarioNuevoComponent,
     UsuarioEdicionComponent,
     PreparatoriaComponent,
     PreparatoriaEdicionComponent,
     DenunciasNuevoComponent,
     LoginComponent,
     SidenavComponent,
-    ToolbarComponent
+    ToolbarComponent,
+
   ],
   imports: [
     BrowserModule,

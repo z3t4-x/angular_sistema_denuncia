@@ -12,6 +12,9 @@ import { PreparatoriaComponent } from './pages/preparatoria/preparatoria.compone
 import { PreparatoriaEdicionComponent } from './pages/preparatoria/preparatoria-edicion/preparatoria-edicion.component';
 import { DenunciasNuevoComponent } from './pages/denuncias/denuncias-nuevo/denuncias-nuevo.component';
 import { LoginComponent } from './pages/login/login.component';
+import { UsuarioComponent } from './pages/usuario/usuario.component';
+import { UsuarioEdicionComponent } from './pages/usuario/usuario-edicion/usuario-edicion.component';
+import { UsuarioNuevoComponent } from './pages/usuario/usuario-nuevo/usuario-nuevo.component';
 
 const routes: Routes = [
 
@@ -50,7 +53,17 @@ const routes: Routes = [
 },
 {
   path: 'preparatoria', component: DenunciasComponent
-}
+},
+
+{
+  path: 'usuario', component: UsuarioComponent
+},
+{
+  path: 'usuarioNuevo', component: UsuarioNuevoComponent
+},
+{
+  path: 'usuarioEditar/:id', component: UsuarioEdicionComponent
+},
 /*
 {
   path: 'preliminar', component: PreliminarComponent

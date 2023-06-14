@@ -1,6 +1,6 @@
 <mat-toolbar class="mb-5">Registro de usuario</mat-toolbar>
 
-<form [formGroup]="usuariosForm"  (ngSubmit)="modificarDenuncia()" >
+<form [formGroup]="usuariosForm"  (ngSubmit)="guardarUsuario()" >
   <div class="container mt-4">
       <div class="row col-md-6" >
         <div class="form-group col-md-6">
@@ -55,8 +55,8 @@
         <div class="form-group col-md-6">
           <mat-form-field appearance="fill">
             <mat-label>Rol</mat-label>
-            <mat-select formControlName="rolesDTO" required>
-              <mat-option *ngFor="let rol of rolesDTO" [value]="rol.idRol">{{rol.rolNombre}}</mat-option>
+            <mat-select formControlName="rol" required>
+              <mat-option *ngFor="let rol of roles" [value]="rol.idRol">{{rol.rolNombre}}</mat-option>
             </mat-select>
           </mat-form-field>
         </div>      
@@ -81,7 +81,7 @@
         <div class="form-group col-md-6">
           <mat-form-field appearance="fill">
             <mat-label>Mesa de partes</mat-label>
-            <mat-select formControlName="mesaParte" required>
+            <mat-select formControlName="mesaPartes" required>
               <mat-option *ngFor="let mesaParte of mesaPartes" [value]="mesaParte.idValor">{{mesaParte.dsValor}}</mat-option>
             </mat-select>
           </mat-form-field>

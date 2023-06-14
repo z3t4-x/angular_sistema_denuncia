@@ -19,7 +19,7 @@ export class DenunciasComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   dataSource = new MatTableDataSource<Denuncia>([]);
-  columnas: string[] = ['idDenuncia', 'nmDenuncia','estadoDenuncia', 'delito', 'fcAltaDenuncia', 'fcPlazo', 'diasRestantes',  'fcHechos', 'auxiliar', 'tipoDocumento', 'fcIngresoDocumento', 'nmDocumento', 'acciones'];
+  columnas: string[] = ['idDenuncia', 'nmDenuncia','estadoDenuncia', 'delito',  'fcPlazo', 'diasRestantes', 'auxiliar', 'tipoDocumento',  'nmDocumento', 'acciones'];
 
   diasRestantes: number;
   tooltipVisible = false;
@@ -55,6 +55,8 @@ export class DenunciasComponent implements OnInit {
       $('[data-toggle="tooltip"]').tooltip();
     });
   }
+
+
 
   listarDenuncias() {
 
