@@ -24,19 +24,6 @@ export class UsuarioNuevoComponent implements OnInit {
   usuariosForm : FormGroup;
 
 
-  columnas: string[] = [
-    'orden',
-    'nombre',
-    'apellido',
-    'cdUsuario',
-    'password',
-    'email',
-    'fiscalia',
-    'mesaParte',
-    'rol',
-    'acciones',
-  ];
-
 
 
   constructor( private usuarioService: UsuarioService,
@@ -113,7 +100,7 @@ crearUsuariosForm(): FormGroup {
       password: datosUsuarioForm.password,
       email: datosUsuarioForm.email,
       mesaParte:{
-        idValor: datosUsuarioForm.mesaPartes,
+        idValor: datosUsuarioForm.mesaParte,
         dsValor: '',
         cdCodigo: ''
       },

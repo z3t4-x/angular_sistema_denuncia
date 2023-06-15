@@ -22,7 +22,7 @@ export class UsuarioService {
   }
 
   listarUsuarios(): Observable<RequestUsuario[]> {
-    return this.http.get<RequestUsuario[]>(`${this.baseUrl}`);
+    return this.http.get<RequestUsuario[]>(`${this.baseUrl}/`);
   }
 
   eliminarUsuario(id: number): Observable<any> {
@@ -32,4 +32,11 @@ export class UsuarioService {
   buscarPorId(id: number): Observable<RequestUsuario> {
     return this.http.get<RequestUsuario>(`${this.baseUrl}/${id}`);
   }
+
+  obtenerUsuariosPorRolYFiscalia(): Observable<RequestUsuario[]> {
+    const url = `${this.baseUrl}/usuarioRolFiscalia`;
+    return this.http.get<RequestUsuario[]>(url);
+  }
+
+
 }
