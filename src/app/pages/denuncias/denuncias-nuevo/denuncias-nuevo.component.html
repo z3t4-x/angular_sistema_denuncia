@@ -78,10 +78,15 @@
       <div class="col">
         <mat-form-field>
           <mat-label>DNI</mat-label>
+          <div style="display: flex;">
           <input matInput formControlName="dni">
           <button mat-icon-button matSuffix (click)="buscarDenunciante()">
-            <mat-icon>search</mat-icon>
+            <i class="fas fa-search iconos"></i>    
           </button>
+          <button class="agregarPersonas" mat-icon-button (click)="abrirDialogoPersonaDenunciante()"> 
+            <i class="fas fa-user-plus iconos"></i> 
+          </button>
+          </div>
         </mat-form-field>
       </div>
 
@@ -275,10 +280,15 @@
       <div class="col">
         <mat-form-field>
           <mat-label>DNI</mat-label>
+          <div style="display: flex;">
           <input matInput formControlName="dni">
           <button mat-icon-button matSuffix (click)="buscarDenunciados()">
-            <mat-icon>search</mat-icon>
+            <i class="fas fa-search iconos"></i>     
           </button>
+          <button class="agregarPersonas" mat-icon-button (click)="abrirDialogoPersonaDenunciado()"> 
+            <i class="fas fa-user-plus iconos"></i> 
+          </button>
+          </div>
         </mat-form-field>
       </div>
 

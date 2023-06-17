@@ -16,3 +16,22 @@ form {
   .guardarDen{
     margin-right: 40px;
   }
+
+  .boton-buscar {
+    margin-right: 10px; /* o el espacio que quieras */
+  }
+  
+  .iconos{
+    font-size: 13px;
+  
+    
+  }
+  
+  .buscar{
+    margin-left: 0px;
+  
+  }
+  
+  .agregarPersonas{
+    margin-right: 10px;
+  }

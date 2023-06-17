@@ -17,6 +17,7 @@ import { CatalogosValoresService } from 'src/app/_service/catalogos-valores.serv
 import { PersonaService } from 'src/app/_service/persona.service';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
+import { MatDialog } from '@angular/material/dialog';
 import { DenunciaPersona } from 'src/app/_model/denunciaPersona';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { DenunciaService } from 'src/app/_service/denuncia.service';
@@ -25,6 +26,7 @@ import {
   LstDenunciado,
   RequestDenuncia,
 } from 'src/app/_model/denuncia';
+import { PersonaDialogComponent } from '../../dialog/persona-dialog/persona-dialog.component';
 
 @Component({
   selector: 'app-denuncias-nuevo',
@@ -97,7 +99,8 @@ export class DenunciasNuevoComponent implements OnInit {
     private denunciaService: DenunciaService,
     private personaService: PersonaService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) {
     this.denuncia.lstDenunciantes = [];
     this.denuncia.lstDenunciados = [];
@@ -616,4 +619,106 @@ export class DenunciasNuevoComponent implements OnInit {
       }
     );
   }
+
+
+
+  /**
+   * Abrel dialogo de registro de personas
+   */
+
+  abrirDialogoPersonaDenunciante(): void {
+    const dialogRef = this.dialog.open(PersonaDialogComponent);
+  
+    dialogRef.afterClosed().subscribe((dniRegistrado: string) => {
+      if (dniRegistrado) {
+
+        console.log("DNI REGISTRADO ===> ", dniRegistrado);
+        
+        // Se ha registrado un nuevo denunciante, buscar y autocompletar los datos
+        this.personaService.buscarPorDNI(dniRegistrado).subscribe((persona: Persona) => {
+          console.log('ID Persona: ', persona.idPersona);
+          const gradoSeleccionado = this.grados.find(
+            (grado) => grado.cdCodigo === persona.grado?.cdCodigo
+          );
+          const generoSeleccionado = this.generos.find(
+            (genero) => genero.cdCodigo === persona.genero?.cdCodigo
+          );
+          const tipoIdentificacionSeleccionado = this.tiposIdentificacion.find(
+            (tipo) => tipo.cdCodigo === persona.tipoIdentificacion?.cdCodigo
+          );
+          const fcNacimientoDate = persona.fcNacimiento
+            ? new Date(persona.fcNacimiento)
+            : null;
+  
+          this.denuncianteForm.patchValue({
+            idPersona: persona.idPersona,
+            dni: persona.dni,
+            nombre: persona.nombre,
+            apellido1: persona.apellido1,
+            apellido2: persona.apellido2,
+            grado: gradoSeleccionado,
+            genero: generoSeleccionado,
+            tipoIdentificacion: tipoIdentificacionSeleccionado,
+            fcNacimiento: fcNacimientoDate,
+          });
+        });
+      }
+    });
+  }
+
+/**
+ * abre dialogo para denunciado
+ */
+
+abrirDialogoPersonaDenunciado(): void {
+  const dialogRef = this.dialog.open(PersonaDialogComponent);
+
+  dialogRef.afterClosed().subscribe((dniRegistrado: string) => {
+    if (dniRegistrado) {
+
+      console.log("DNI REGISTRADO ===> ", dniRegistrado);
+      
+      // Se ha registrado un nuevo denunciante, buscar y autocompletar los datos
+      this.personaService.buscarPorDNI(dniRegistrado).subscribe((persona: Persona) => {
+        console.log('ID Persona: ', persona.idPersona);
+        const gradoSeleccionado = this.grados.find(
+          (grado) => grado.cdCodigo === persona.grado?.cdCodigo
+        );
+        const generoSeleccionado = this.generos.find(
+          (genero) => genero.cdCodigo === persona.genero?.cdCodigo
+        );
+        const tipoIdentificacionSeleccionado = this.tiposIdentificacion.find(
+          (tipo) => tipo.cdCodigo === persona.tipoIdentificacion?.cdCodigo
+        );
+        const fcNacimientoDate = persona.fcNacimiento
+          ? new Date(persona.fcNacimiento)
+          : null;
+
+        this.denunciadoForm.patchValue({
+          idPersona: persona.idPersona,
+          dni: persona.dni,
+          nombre: persona.nombre,
+          apellido1: persona.apellido1,
+          apellido2: persona.apellido2,
+          grado: gradoSeleccionado,
+          genero: generoSeleccionado,
+          tipoIdentificacion: tipoIdentificacionSeleccionado,
+          fcNacimiento: fcNacimientoDate,
+        });
+      });
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
 }
