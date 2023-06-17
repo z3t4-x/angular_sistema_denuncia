@@ -52,6 +52,11 @@ registrar(persona : Persona){
 }
 
 
+registrarPersona(persona : Persona){
+  return this.http.post(this.url, persona);
+}
+
+
 
 
   modificar(persona : Persona){

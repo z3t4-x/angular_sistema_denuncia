@@ -22,5 +22,10 @@
     width: 30%;
   }
 
+  input.ng-invalid {
+    border-color: red; /* Cambiar el color del borde */
+  }
+  
+
 
   

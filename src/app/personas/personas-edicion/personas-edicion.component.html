@@ -52,9 +52,22 @@
             <div class="form-group col-md-3">
               <mat-form-field appearance="fill">
                 <mat-label>DNI</mat-label>
-                <input matInput formControlName="dni" required>
+                <input matInput formControlName="dni" (blur)="verificarDNI($event)" (input)="restrictToNumbers($event)" maxlength="8" pattern="[0-9]*">
+                <mat-error *ngIf="personaForm?.get('dni')?.errors?.['dniExists']">
+                  El DNI ingresado ya existe. Por favor, ingrese un DNI válido.
+                </mat-error>
+                <mat-error *ngIf="personaForm?.get('dni')?.hasError('dniInvalido')">
+                  El DNI debe tener 8 dígitos.
+                </mat-error>
+                
+                
               </mat-form-field>
             </div>
+            
+            
+            
+            
+   
 
             <div class="form-group col-md-3">
               <mat-form-field appearance="fill">
@@ -65,14 +78,15 @@
               </mat-form-field>
             </div>
   
- 
-  
             <div class="form-group col-md-3">
               <mat-form-field appearance="fill">
                 <mat-label>Fecha de Nacimiento</mat-label>
-                <input matInput formControlName="fcNacimiento" >
+                <input matInput [matDatepicker]="picker" formControlName="fcNacimiento">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
             </div>
+            
           </div>
   
           <div class="form-group col-md-3">

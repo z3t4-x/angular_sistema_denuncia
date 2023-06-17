@@ -23,9 +23,6 @@ export class UsuarioNuevoComponent implements OnInit {
 
   usuariosForm : FormGroup;
 
-
-
-
   constructor( private usuarioService: UsuarioService,
     private catalogosValoresService: CatalogosValoresService,
      private formBuilder: FormBuilder, private rolService: RolService,

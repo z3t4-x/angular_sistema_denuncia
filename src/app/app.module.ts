@@ -31,6 +31,7 @@ import { SidenavComponent } from './pages/sidenav/sidenav.component';
 import { ToolbarComponent } from './pages/toolbar/toolbar.component';
 import { AuthInterceptor } from './auth.interceptor';
 import { UsuarioNuevoComponent } from './pages/usuario/usuario-nuevo/usuario-nuevo.component';
+import { PersonaDialogComponent } from './pages/dialog/persona-dialog/persona-dialog.component';
 
 
 
@@ -56,6 +57,7 @@ import { UsuarioNuevoComponent } from './pages/usuario/usuario-nuevo/usuario-nue
     LoginComponent,
     SidenavComponent,
     ToolbarComponent,
+    PersonaDialogComponent,
 
   ],
   imports: [

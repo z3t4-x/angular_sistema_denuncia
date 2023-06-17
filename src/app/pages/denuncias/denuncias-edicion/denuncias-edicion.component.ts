@@ -19,6 +19,8 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { DenunciaPersonaService } from 'src/app/_service/denuncia-persona.service';
 import { catchError } from 'rxjs/operators';
 import { LstDenunciado, LstDenunciante, RequestDenunciaModif } from 'src/app/_model/denunciaModif';
+import { MatDialog } from '@angular/material/dialog';
+import { PersonaDialogComponent } from '../../dialog/persona-dialog/persona-dialog.component';
 
 
 @Component({
@@ -96,6 +98,7 @@ export class DenunciasEdicionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
+    public dialog: MatDialog
 
   ) {
     this.denuncia.lstDenunciantes = [];
@@ -796,7 +799,96 @@ revertirEliminarDenunciado(idPersona: number) {
   }
 
 
+  /**
+   * Abrel dialogo de registro de personas
+   */
 
+  abrirDialogoPersonaDenunciante(): void {
+    const dialogRef = this.dialog.open(PersonaDialogComponent);
+  
+    dialogRef.afterClosed().subscribe((dniRegistrado: string) => {
+      if (dniRegistrado) {
+
+        console.log("DNI REGISTRADO ===> ", dniRegistrado);
+        
+        // Se ha registrado un nuevo denunciante, buscar y autocompletar los datos
+        this.personaService.buscarPorDNI(dniRegistrado).subscribe((persona: Persona) => {
+          console.log('ID Persona: ', persona.idPersona);
+          const gradoSeleccionado = this.grados.find(
+            (grado) => grado.cdCodigo === persona.grado?.cdCodigo
+          );
+          const generoSeleccionado = this.generos.find(
+            (genero) => genero.cdCodigo === persona.genero?.cdCodigo
+          );
+          const tipoIdentificacionSeleccionado = this.tiposIdentificacion.find(
+            (tipo) => tipo.cdCodigo === persona.tipoIdentificacion?.cdCodigo
+          );
+          const fcNacimientoDate = persona.fcNacimiento
+            ? new Date(persona.fcNacimiento)
+            : null;
+  
+          this.denuncianteForm.patchValue({
+            idPersona: persona.idPersona,
+            dni: persona.dni,
+            nombre: persona.nombre,
+            apellido1: persona.apellido1,
+            apellido2: persona.apellido2,
+            grado: gradoSeleccionado,
+            genero: generoSeleccionado,
+            tipoIdentificacion: tipoIdentificacionSeleccionado,
+            fcNacimiento: fcNacimientoDate,
+          });
+        });
+      }
+    });
+  }
+
+/**
+ * abre dialogo para denunciado
+ */
+
+abrirDialogoPersonaDenunciado(): void {
+  const dialogRef = this.dialog.open(PersonaDialogComponent);
+
+  dialogRef.afterClosed().subscribe((dniRegistrado: string) => {
+    if (dniRegistrado) {
+
+      console.log("DNI REGISTRADO ===> ", dniRegistrado);
+      
+      // Se ha registrado un nuevo denunciante, buscar y autocompletar los datos
+      this.personaService.buscarPorDNI(dniRegistrado).subscribe((persona: Persona) => {
+        console.log('ID Persona: ', persona.idPersona);
+        const gradoSeleccionado = this.grados.find(
+          (grado) => grado.cdCodigo === persona.grado?.cdCodigo
+        );
+        const generoSeleccionado = this.generos.find(
+          (genero) => genero.cdCodigo === persona.genero?.cdCodigo
+        );
+        const tipoIdentificacionSeleccionado = this.tiposIdentificacion.find(
+          (tipo) => tipo.cdCodigo === persona.tipoIdentificacion?.cdCodigo
+        );
+        const fcNacimientoDate = persona.fcNacimiento
+          ? new Date(persona.fcNacimiento)
+          : null;
+
+        this.denunciadoForm.patchValue({
+          idPersona: persona.idPersona,
+          dni: persona.dni,
+          nombre: persona.nombre,
+          apellido1: persona.apellido1,
+          apellido2: persona.apellido2,
+          grado: gradoSeleccionado,
+          genero: generoSeleccionado,
+          tipoIdentificacion: tipoIdentificacionSeleccionado,
+          fcNacimiento: fcNacimientoDate,
+        });
+      });
+    }
+  });
+}
+
+  
+  
 
 
 }

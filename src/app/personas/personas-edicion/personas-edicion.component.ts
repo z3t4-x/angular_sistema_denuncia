@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, NgForm, ValidationErrors, Validators } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, map } from 'rxjs';
+import { Observable, forkJoin, map, of } from 'rxjs';
 import { Catalogos } from 'src/app/_model/catalogos';
 import { CatalogosValores } from 'src/app/_model/catalogosValores';
 import { Persona } from 'src/app/_model/persona';
@@ -25,6 +25,8 @@ import Swal from 'sweetalert2';
 export class PersonasEdicionComponent implements OnInit {
 
   errorMessage: string;
+  dniExistsError: boolean = false;
+
 
   totalItems: number;
   pageSize: number = 10;
@@ -50,28 +52,17 @@ export class PersonasEdicionComponent implements OnInit {
     private catalogoValoresService: CatalogosValoresService,
     private router: Router,
     private activateRoute: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.personaForm = this.fb.group({
-      idPersona: [''],
-      nombre: ['', Validators.required],
-      apellido1: ['', Validators.required],
-      apellido2: ['', Validators.required],
-      grado: [''],
-      genero: [''],
-      tipoIdentificacion: ['', Validators.required],
-      dni: ['', [Validators.required, dniValidator]],
-      fcNacimiento: [''],
-      telefono: [null, [Validators.nullValidator, this.telefonoValidator]],
-
-    });
-
+    this.dniExistsError = false;
   }
 
   ngOnInit(): void {
 
 
     this.cargarCatalogosValores();
+    this.setupForm();
 
     this.activateRoute.params.subscribe(params => {
       const id = params['id'];
@@ -100,10 +91,29 @@ export class PersonasEdicionComponent implements OnInit {
       this.personaForm.valueChanges.subscribe(() => {
         this.guardarHabilitado = true;
       });
+
+
       }
 
     });
   }
+
+
+  setupForm(): void {
+    this.personaForm = this.fb.group({
+      idPersona: [''],
+      nombre: ['', Validators.required],
+      apellido1: ['', Validators.required],
+      apellido2: ['', Validators.required],
+      grado: [''],
+      genero: [''],
+      tipoIdentificacion: ['', Validators.required],
+      dni: ['', [Validators.required, dniValidator]],
+      fcNacimiento: ['', Validators.required],
+      telefono: [null, [Validators.nullValidator, this.telefonoValidator]],
+    });
+  }
+  
 
   cargarCatalogosValores(): void {
     forkJoin([
@@ -195,7 +205,53 @@ export class PersonasEdicionComponent implements OnInit {
   }
 
 
+
+  verificarDNI(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const dni = target.value;
+    
+    this.dniExistsError = false;
+    
+    if (this.personaForm?.get('dni')) {
+      this.personaService.buscarPorDNI(dni).subscribe(
+        persona => {
+          if (persona && persona.dni) {
+            this.personaForm.get('dni')?.setErrors({ 'dniExists': true });
+            this.changeDetectorRef.detectChanges();
+          } else {
+            this.personaForm.get('dni')?.setErrors(null);
+          }
+        },
+        error => {
+          console.error('Error buscando DNI', error);
+        }
+      );
+    }
   }
+  
+  
+  
+  
+  
+  restrictToNumbers(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value.replace(/[^0-9]/g, '');
+    input.value = value;
+    
+    if (this.personaForm?.get('dni')) {
+      this.personaForm.get('dni')?.setValue(value);
+    }
+  }
+  
+  
+  
+  
+  
+  
+  
+
+
+}
 
 
 export function dniValidator(control: FormControl) {
