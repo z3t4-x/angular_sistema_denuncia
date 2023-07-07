@@ -15,6 +15,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { UsuarioComponent } from './pages/usuario/usuario.component';
 import { UsuarioEdicionComponent } from './pages/usuario/usuario-edicion/usuario-edicion.component';
 import { UsuarioNuevoComponent } from './pages/usuario/usuario-nuevo/usuario-nuevo.component';
+import { BusquedaDenunciaComponent } from './pages/busquedas/busqueda-denuncia/busqueda-denuncia.component';
+import { ReportesDenunciaComponent } from './pages/reportes/reportes-denuncia/reportes-denuncia.component';
 
 const routes: Routes = [
 
@@ -63,6 +65,13 @@ const routes: Routes = [
 },
 {
   path: 'usuarioEditar/:id', component: UsuarioEdicionComponent
+},
+{
+  path: 'busquedaDenuncia', component: BusquedaDenunciaComponent
+},
+
+{
+  path: 'reporteDenuncia', component: ReportesDenunciaComponent
 },
 /*
 {

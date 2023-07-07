@@ -33,11 +33,13 @@
         <mat-sidenav #sidenav *ngIf="isLoggedIn()" style="width: 200px" mode="side" [opened]="sidenavOpened" (openedChange)="sidenavOpened=$event" >
             <img src="assets/fuero_militar.png" width="128" style="margin-left: 20px">
             
-            <button mat-menu-item   routerLink="/buscar" style="cursor: pointer">
-                <mat-icon>search</mat-icon>
-                <span>Buscar</span>
+            <mat-divider></mat-divider>
+            
+            <mat-divider></mat-divider>            
+            <button mat-menu-item  routerLink="/busquedaDenuncia" style="cursor: pointer">
+                <i class="fas fa-search"></i>
+                <span>Búsqueda expedientes/denuncias</span>
             </button>
-
             <mat-divider></mat-divider>
             <button mat-menu-item  routerLink="/personas" style="cursor: pointer">
                 <i class="fas fa-users iconos"></i>
@@ -64,12 +66,11 @@
                 <i class="fab fa-steam iconos"></i>
                 <span>Registrar Catalogos</span>
             </button>
-            <mat-divider></mat-divider>
 
-  
+            <mat-divider></mat-divider>
  
             <mat-divider></mat-divider>
-            <button mat-menu-item  routerLink="/reporte" style="cursor: pointer">
+            <button mat-menu-item  routerLink="/reporteDenuncia" style="cursor: pointer">
                 <i class="fas fa-chart-pie iconos"></i>
                 <span>Reportes</span>
             </button>

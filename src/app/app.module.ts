@@ -32,6 +32,14 @@ import { ToolbarComponent } from './pages/toolbar/toolbar.component';
 import { AuthInterceptor } from './auth.interceptor';
 import { UsuarioNuevoComponent } from './pages/usuario/usuario-nuevo/usuario-nuevo.component';
 import { PersonaDialogComponent } from './pages/dialog/persona-dialog/persona-dialog.component';
+import { BusquedaDenunciaComponent } from './pages/busquedas/busqueda-denuncia/busqueda-denuncia.component';
+import { ReportesDenunciaComponent } from './pages/reportes/reportes-denuncia/reportes-denuncia.component';
+import { HistoricoDialogComponent } from './pages/dialog/historico-dialog/historico-dialog.component';
+import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { provideStorage,getStorage,  } from '@angular/fire/storage';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 
 
 
@@ -58,6 +66,9 @@ import { PersonaDialogComponent } from './pages/dialog/persona-dialog/persona-di
     SidenavComponent,
     ToolbarComponent,
     PersonaDialogComponent,
+    BusquedaDenunciaComponent,
+    ReportesDenunciaComponent,
+    HistoricoDialogComponent,
 
   ],
   imports: [
@@ -68,7 +79,11 @@ import { PersonaDialogComponent } from './pages/dialog/persona-dialog/persona-di
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatSortModule,
-    MatCardModule 
+    MatCardModule,  
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireStorageModule,
+   // provideFirebaseApp(() => initializeApp(environment.firebase)),    
+   // provideStorage(() => getStorage()) 
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

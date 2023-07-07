@@ -27,6 +27,9 @@ import {
   RequestDenuncia,
 } from 'src/app/_model/denuncia';
 import { PersonaDialogComponent } from '../../dialog/persona-dialog/persona-dialog.component';
+import { RequestUsuario, Usuario } from 'src/app/_model/usuario';
+import { UsuarioService } from 'src/app/_service/usuario.service';
+import { FirebaseService } from 'src/app/_service/firebase.service';
 
 @Component({
   selector: 'app-denuncias-nuevo',
@@ -44,6 +47,7 @@ export class DenunciasNuevoComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('pickerDenunciante') pickerDenunciante: MatDatepicker<Date>;
   @ViewChild('pickerDenunciado') pickerDenunciado: MatDatepicker<Date>;
+ 
   dataSourceDenunciantes: MatTableDataSource<DenunciaPersona>;
   dataSourceDenunciados: MatTableDataSource<DenunciaPersona>;
 
@@ -52,16 +56,22 @@ export class DenunciasNuevoComponent implements OnInit {
   denunciadoForm: FormGroup;
 
   tablasLlenas: boolean = false;
+  cargando: boolean = false;
+
 
   denuncia: Denuncia = new Denuncia();
+  linkFile: string | null = null;
+  nmArchivo: string | null = null;
+  nombreArchivoSeleccionado: string = '';
 
-  public auxiliares: CatalogosValores[];
+ // public auxiliares: CatalogosValores[];
   public tiposDocumentos: CatalogosValores[];
   public tiposDelitos: CatalogosValores[];
   public estadosDenuncias: CatalogosValores[];
   public generos: CatalogosValores[];
   public tiposIdentificacion: CatalogosValores[];
   public grados: CatalogosValores[];
+  public investigadores: Usuario[];
 
   // public lstDenunciantes: DenunciaPersona[] = [];
 
@@ -98,6 +108,8 @@ export class DenunciasNuevoComponent implements OnInit {
     private catalogoValoresService: CatalogosValoresService,
     private denunciaService: DenunciaService,
     private personaService: PersonaService,
+    private usuarioService: UsuarioService,
+    private firebaseService: FirebaseService,
     private formBuilder: FormBuilder,
     private router: Router,
     public dialog: MatDialog
@@ -120,6 +132,8 @@ export class DenunciasNuevoComponent implements OnInit {
     this.initializeForm();
     this.denunciadoForm = this.crearDenunciadosForm();
     this.denuncianteForm = this.crearDenunciantesForm();
+    this.obtenerUsuarios();
+    this.updateCharacterCount();
   }
 
   submitForm(): void {}
@@ -135,8 +149,9 @@ export class DenunciasNuevoComponent implements OnInit {
       fcHechos: new FormControl('', Validators.required),
       tipoDocumento: new FormControl('', Validators.required),
       nmDocumento: new FormControl('', Validators.required),
-      auxiliar: new FormControl('', Validators.required),
+      investigador: new FormControl('', Validators.required),      
       dsDescripcion: new FormControl(''),
+      subirArchivo: new FormControl('')
     });
   }
 
@@ -437,7 +452,7 @@ export class DenunciasNuevoComponent implements OnInit {
       this.catalogoValoresService.buscarPorNombreCatalogo(
         'ESTADO DE LA DENUNCIA'
       ),
-      this.catalogoValoresService.buscarPorNombreCatalogo('AUXILIAR'),
+    ///  this.catalogoValoresService.buscarPorNombreCatalogo('AUXILIAR'),
       this.catalogoValoresService.buscarPorNombreCatalogo('TIPOS DE DELITOS'),
       this.catalogoValoresService.buscarPorNombreCatalogo('TIPOS DE DOCUMENTO'),
       this.catalogoValoresService.buscarPorNombreCatalogo('SEXO'),
@@ -449,14 +464,14 @@ export class DenunciasNuevoComponent implements OnInit {
     ]).subscribe(
       ([
         estadosDenuncias,
-        auxiliares,
+      //  auxiliares,
         tiposDelitos,
         tiposDocumentos,
         generos,
         tiposIdentificacion,
         grados,
       ]) => {
-        this.auxiliares = auxiliares;
+       // this.auxiliares = auxiliares;
         this.tiposDocumentos = tiposDocumentos;
         this.tiposDelitos = tiposDelitos;
         this.estadosDenuncias = estadosDenuncias;
@@ -567,10 +582,10 @@ export class DenunciasNuevoComponent implements OnInit {
         cdCodigo: '',
       },
       fcHechos: datosDenunciaForm.fcHechos,
-      auxiliar: {
-        idValor: datosDenunciaForm.auxiliar,
-        dsValor: '',
-        cdCodigo: '',
+      investigador: {
+        idUsuario: datosDenunciaForm.investigador,
+        nombre: '',
+        apellido: '',
       },
       fiscalia: {
         idValor: datosDenunciaForm.fiscalia,
@@ -592,6 +607,8 @@ export class DenunciasNuevoComponent implements OnInit {
       nmDocumento: datosDenunciaForm.nmDocumento,
       lstDenunciados: lstDenunciados,
       lstDenunciantes: lstDenunciantes,
+      linkFile: this.linkFile,
+      nmArchivo: this.nmArchivo,
     };
 
     console.log({
@@ -710,12 +727,81 @@ abrirDialogoPersonaDenunciado(): void {
   });
 }
 
+/**
+ * lista investigadores
+ */
+
+
+obtenerUsuarios(): void {
+  this.usuarioService.obtenerUsuariosPorRolYFiscalia().subscribe(
+    (data) => {
+      this.investigadores = data;
+    },
+    (error) => {
+      console.log('Error al obtener los usuarios', error);
+    }
+  );
+}
 
 
 
 
+characterCount: number = 0;
+
+updateCharacterCount() {
+  const dsDescripcion = this.denuncianteForm.get('dsDescripcion');
+  if (dsDescripcion) {
+    this.characterCount = dsDescripcion.value ? dsDescripcion.value.length : 0;
+  }
+}
 
 
+
+subirArchivo(file: File | undefined): void {
+  if (file) {
+    this.cargando = true; // Activar el estado de carga
+
+    this.nombreArchivoSeleccionado = file.name;
+    this.firebaseService.uploadFile(file).subscribe(
+      (downloadURL: string | null) => {
+        this.linkFile = downloadURL;
+        this.nmArchivo = file.name;
+
+        console.log("nombre archivo" + '/files/' + downloadURL);
+        console.log("link firebase" + this.linkFile);
+        console.log("nombre archivo" + this.nmArchivo);
+
+        this.cargando = false; // Desactivar el estado de carga
+      },
+      (error: any) => {
+        console.error('Error al subir el archivo:', error);
+        this.cargando = false; // Desactivar el estado de carga en caso de error
+      }
+    );
+  }
+}
+
+
+/*
+subirArchivo(file: File | undefined): void {
+  if (file) {
+    this.nombreArchivoSeleccionado = file.name;
+    this.firebaseService.uploadFile(file).subscribe(
+      (downloadURL: string | null) => {
+        this.linkFile = downloadURL;
+        this.nmArchivo = file.name;
+
+        console.log("nombre archivo" + '/files/' + downloadURL);
+        console.log("link firebase" + this.linkFile);
+        console.log("nombre archivo" + this.nmArchivo);
+      },
+      (error: any) => {
+        console.error('Error al subir el archivo:', error);
+      }
+    );
+  }
+}
+*/
 
 
 

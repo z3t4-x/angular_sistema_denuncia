@@ -1,21 +1,24 @@
-<mat-toolbar>Editar denuncia </mat-toolbar>
+<mat-toolbar>
+  Editar {{ estadoFiltro === 'DCIA' ? 'Denuncia' : estadoFiltro === 'PRM' ? 'Etapa Preliminar' : estadoFiltro === 'PRPA' ? 'Etapa Preparatoria' : '' }}
+</mat-toolbar>
+
 <form [formGroup]="denunciaForm" (ngSubmit)="modificarDenuncia()">
 
 
   <input type="hidden" name="idDenuncia" formControlName="idDenuncia">
 
     <div class="row">
-        <div class="col">
-            <mat-form-field>
-              <mat-label>N° denuncia</mat-label>
-                <input matInput formControlName="nmDenuncia" readonly="true">
-            </mat-form-field>
-        </div>
+      <div class="col" *ngIf="estadoFiltro === 'DCIA' || estadoFiltro === 'PRM' || estadoFiltro === 'PRPA'">
+        <mat-form-field>
+          <mat-label>N° {{ estadoFiltro === 'DCIA' ? 'denuncia' : 'expediente' }}</mat-label>
+          <input matInput [formControlName]="estadoFiltro === 'DCIA' ? 'nmDenuncia' : estadoFiltro === 'PRM' ? 'nmExpedienteInvPreliminar' : 'nmExpedientePreparatoria'" readonly="true">
+        </mat-form-field>
+      </div>
 
 
         <div class="col">
             <mat-form-field>
-              <mat-label>Estado</mat-label>
+              <mat-label>Etapa</mat-label>
               <mat-select formControlName="estadoDenuncia">
                 <mat-option *ngFor="let estado of estadosDenuncias" [value]="estado.idValor">
                   {{ estado.dsValor }}
@@ -88,27 +91,89 @@
 
     <div class="col">
       <mat-form-field>
-        <mat-label>Auxiliar</mat-label>
-        <mat-select formControlName="auxiliar">
-          <mat-option *ngFor="let aux of auxiliares" [value]="aux.idValor">
-            {{ aux.dsValor }}
+        <mat-label>Auxiliar investigador</mat-label>
+        <mat-select formControlName="investigador">
+          <mat-option *ngFor="let investigador of investigadores" [value]="investigador.idUsuario">
+            {{ investigador.nombre }} {{ investigador.apellido }}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
-
-    <div class="col-md-6"> <!-- Ajusta el tamaño de la columna según tus necesidades -->
-      <mat-form-field class="w-100"> <!-- Ajusta el tamaño del mat-form-field -->
-        <mat-label>Descripción de la Denuncia</mat-label>
-        <textarea matInput formControlName="dsDescripcion" rows="7"></textarea> <!-- Ajusta el tamaño del textarea con rows -->
+ 
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="estadoExpedienteEtapa">
+          <mat-option *ngFor="let estadoEtapa of estadoExpedienteEtapas" [value]="estadoEtapa.idValor">
+            {{ estadoEtapa.dsValor }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
+    </div> 
+
+
+    <div class="col">
+      <mat-checkbox (change)="onChckFcProrrogaChange($event.checked)">Habilitar F. prórroga</mat-checkbox>
+      <mat-form-field>
+        <mat-label>Fecha Prorroga</mat-label>
+        <input matInput formControlName="fcProrroga" type="date">
+      </mat-form-field>
+    </div>
+    
+
+  </div>
+
+  <div class="row">
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Archivo</mat-label>
+        <input placeholder="Seleccionar archivo"  formControlName="subirArchivo" type="file" style="opacity: 0; position: absolute; z-index: -1" #fileInput> 
+        <input matInput placeholder="Archivo seleccionado" (click)="fileInput?.click()" readonly>
+        
+        <mat-icon matSuffix>attach_file</mat-icon>
+     
+      </mat-form-field> 
+      <button type="button" class="mr-3 btn btn-danger btn-sm" (click)="subirArchivo(fileInput?.files?.[0])">Subir archivo</button>
     </div>
 
 
+    <div class="col" >
+      <mat-form-field>
+       
+        <input matInput formControlName="nmArchivo" readonly="true">
+      </mat-form-field>
+
+      <a [href]="denunciaForm.get('linkFile')?.value" [download]="denunciaForm.get('linkFile')?.value" target="_blank">
+        <button type="button" class="mr-3 btn btn-danger btn-sm">
+          <i class="fas fa-cloud-download-alt"></i>
+        </button>
+      </a>
+      
+      
+      
+    </div>
+
+    
+
+
+
+
+    <div class="col-md-6">
+      <mat-form-field class="w-100">
+        <mat-label>Descripción de la Denuncia</mat-label>
+        <textarea matInput formControlName="dsDescripcion" rows="7"></textarea>
+        <mat-hint align="end">
+          {{ denuncianteForm.get('dsDescripcion')?.value ? (denuncianteForm.get('dsDescripcion')?.value?.length || 0) : 0 }}/1000 caracteres
+        </mat-hint>
+      </mat-form-field>
+    </div>
 
   </div>
 
 
+  <div *ngIf="!['DCIA', 'PRM', 'PRPA'].includes(estadoFiltro)">   <!-- Código del formulario aquí -->
+ 
   <h3><strong> Datos del denunciante</strong></h3>
 
 
@@ -309,7 +374,7 @@
 
   </form>
 
-
+</div>
 
   <h3 class="mt-5"><strong > Datos del denunciado</strong></h3>
 

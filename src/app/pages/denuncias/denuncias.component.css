@@ -9,3 +9,8 @@
   .rojo {
     background-color: #f53246; /* Color rojo */
   }
+
+  .idDenuncia{
+    width: 3px !important;
+  }
+

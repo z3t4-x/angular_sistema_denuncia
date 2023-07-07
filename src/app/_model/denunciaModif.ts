@@ -7,7 +7,7 @@ export interface RequestDenunciaModif {
   fcAltaDenuncia: string;
   tipoDelito: CatalogosValores;
   fcHechos: string;
-  auxiliar: CatalogosValores;
+ // auxiliar: CatalogosValores;
   nmDenuncia: string;
   fcPlazo: string;
   estadoDenuncia: CatalogosValores;
@@ -26,6 +26,8 @@ export interface RequestDenunciaModif {
   cdUsuAlta: string;
   fcModifFila: string;
   cdUsuModif: string;
+  estadoExpedienteEtapa: CatalogosValores;
+  fcProrroga ?:string | null;
 }
 
 export interface LstDenunciado {
@@ -62,4 +64,6 @@ export interface CatalogosValores {
 
 export interface UsuarioDTO {
   idUsuario: number;
+  nombre:string;
+  apellido:string;
 }

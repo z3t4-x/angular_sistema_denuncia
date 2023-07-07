@@ -13,7 +13,7 @@ export class Denuncia {
     mesaParte: CatalogosValores;
     tipoDelito: CatalogosValores;
     fcHechos: string;
-    nmDenuncia:String;
+    nmDenuncia:string;
     estadoDenuncia: CatalogosValores;
     fcAltaDenuncia: string;
     fcPlazo: string;
@@ -33,6 +33,11 @@ export class Denuncia {
     cdUsuAlta: string;
     fcModifFila: string;
     cdUsuModif: string;
+    estadoExpedienteEtapa: CatalogosValores;
+    fcProrroga?: string;
+    nmArchivo?:string;
+    linkFile?:string;
+
 }
 
  export interface RequestDenuncia {
@@ -41,7 +46,7 @@ export class Denuncia {
   //idDenuncia: number
   tipoDelito: CatalogosValores;
   fcHechos: string;
-  auxiliar: CatalogosValores;
+  investigador: UsuarioDTO;
   fiscalia: CatalogosValores;
   mesaParte: CatalogosValores;
   dsDescripcion: string;
@@ -50,6 +55,8 @@ export class Denuncia {
   nmDocumento: string;
   lstDenunciantes: LstDenunciante[];
   lstDenunciados: LstDenunciado[];
+  linkFile?:string | null;
+  nmArchivo?:string | null;
  // estadoDenuncia: CatalogosValores;
 
 }
@@ -88,4 +95,6 @@ export interface CatalogosValores {
 
 export interface UsuarioDTO {
   idUsuario: number;
+  nombre: string;
+  apellido: string;
 }

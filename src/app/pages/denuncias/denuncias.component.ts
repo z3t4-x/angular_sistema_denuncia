@@ -6,6 +6,9 @@ import * as moment from 'moment';
 import { Denuncia } from 'src/app/_model/denuncia';
 import { DenunciaService } from 'src/app/_service/denuncia.service';
 import 'moment-timezone';
+import { MatDialog } from '@angular/material/dialog';
+import { RequestDenunciaHistorico } from 'src/app/_model/denunciaHistorico';
+import { HistoricoDialogComponent } from '../dialog/historico-dialog/historico-dialog.component';
 declare var $: any;
 
 @Component({
@@ -19,7 +22,7 @@ export class DenunciasComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   dataSource = new MatTableDataSource<Denuncia>([]);
-  columnas: string[] = ['idDenuncia', 'nmDenuncia','estadoDenuncia', 'delito',  'fcPlazo', 'diasRestantes', 'auxiliar', 'tipoDocumento',  'nmDocumento', 'acciones'];
+  columnas: string[] = ['idDenuncia', 'nmDenuncia','estadoDenuncia', 'delito', 'diasRestantes', 'investigador', 'tipoDocumento',  'nmDocumento', 'acciones'];
 
   diasRestantes: number;
   tooltipVisible = false;
@@ -28,8 +31,8 @@ export class DenunciasComponent implements OnInit {
   estadoFiltro : string;
 
   constructor(
-    private denunciaService: DenunciaService
-
+    private denunciaService: DenunciaService,
+    private dialog: MatDialog
 
   ) {
     moment.tz.setDefault('America/Lima');
@@ -68,9 +71,9 @@ export class DenunciasComponent implements OnInit {
         denuncia.fcPlazo =  moment(denuncia.fcPlazo).format('YYYY-MM-DD');
         denuncia.fcAltaDenuncia =  moment(denuncia.fcAltaDenuncia).format('YYYY-MM-DD');
 
-        const fechaActual = moment();
-        const fechaPlazo = moment(denuncia.fcPlazo);
-        const diasRestantes = fechaPlazo.diff(fechaActual, 'days');
+        const fechaActual = moment().startOf('day');
+        const fechaPlazo = moment(denuncia.fcPlazo).startOf('day');
+        const diasRestantes = fechaPlazo.diff(fechaActual, 'days', true);
 
         // Agregar días restantes a la denuncia
         denuncia.diasRestantes = diasRestantes;
@@ -141,6 +144,19 @@ export class DenunciasComponent implements OnInit {
 
   }
 
+  listarHistorico(idDenuncia: number) {
+    const dialogRef = this.dialog.open(HistoricoDialogComponent, {
+      data: { idDenuncia: idDenuncia },
+      maxWidth: '1800px'
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      // Realiza acciones después de cerrar el dialog si es necesario
+    });
+  }
+  
+  
+  
 
 
 }

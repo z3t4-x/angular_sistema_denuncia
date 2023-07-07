@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('authorities', JSON.stringify(authorities));
         this.isLoggedIn = true;
         // Redirigir al usuario a la página principal o a la página deseada después del login
-        this.router.navigate(['/denuncia']);
+        this.router.navigate(['/reporteDenuncia']);
       },
       error => {
         console.error('Error en el login:', error);

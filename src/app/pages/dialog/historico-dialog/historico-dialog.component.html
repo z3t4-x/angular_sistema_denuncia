@@ -1,0 +1,98 @@
+<!-- Tabla de historico -->
+<mat-toolbar>Histórico de denuncias / expedientes</mat-toolbar>
+
+    <mat-table [dataSource]="dataSource" matSort>
+
+        <!-- Definición de la columna ID -->
+        <ng-container matColumnDef="idDenunciaHist">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.denuncia.idDenuncia }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="estadoDenuncia">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Etapa</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.estadoDenuncia.dsValor }}</mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="numDenuncia">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>N° Denuncia</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.numDenuncia }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cdExpedientePreliminar">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>N° Preliminar</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.cdExpedientePreliminar }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cdExpedientePreparatoria">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>N° Preparatoria</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.cdExpedientePreparatoria }}</mat-cell>
+        </ng-container>
+
+
+
+        <!-- Definición de la columna delito -->
+        <ng-container matColumnDef="delito">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Delito</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.tipoDelito.dsValor }}</mat-cell>
+        </ng-container>
+
+        <!-- Definición de la columna fcHechos -->
+        <ng-container matColumnDef="fcHechos">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>F. Hechos</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.fcHechos }}</mat-cell>
+        </ng-container>
+
+        <!-- Definición de la columna investigador -->
+        <ng-container matColumnDef="investigador">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Investigador</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.investigador.nombre }} {{ row.investigador.apellido }}</mat-cell>
+        </ng-container>
+
+        <!-- Definición de la columna tipoDocumento -->
+        <ng-container matColumnDef="tipoDocumento">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>T. Doc</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.tipoDocumento.dsValor }}</mat-cell>
+        </ng-container>
+
+        <!-- Definición de la columna fcIngresoDocumento -->
+        <ng-container matColumnDef="fcIngresoDocumento">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>F. Doc</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.fcIngresoDocumento }}</mat-cell>
+        </ng-container>
+
+        <!-- Definición de la columna nmDocumento -->
+        <ng-container matColumnDef="nmDocumento">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>N° Doc</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.numDocumento }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cdUsuAlta">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>usuario alta</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.cdUsuAlta }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cdUsuModif">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>usuario Modif</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.cdUsuModif }}</mat-cell>
+        </ng-container>
+
+                <!-- Definición de la columna fcAltaDenuncia -->
+       <ng-container matColumnDef="fcAltaDenuncia">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>F. Alta</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.fcAltaDenuncia }}</mat-cell>
+         </ng-container>
+
+        <ng-container matColumnDef="fcModifFila">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Fc. Modif</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.fcModifFila }}</mat-cell>
+        </ng-container>
+
+
+
+        <!-- Definición de las columnas -->
+        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+    </mat-table>
+

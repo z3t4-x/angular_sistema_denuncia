@@ -4,7 +4,18 @@
 
 export const environment = {
   production: false,
-  HOST: 'http://localhost:8083'
+  HOST: 'http://localhost:8083',
+  firebase: {
+    apiKey: 'AIzaSyAyMoIMiyf-7TfqrK3mXlJQcSmYaKdCMy0',
+    authDomain: 'vocalia-superior.firebaseapp.com',
+    projectId: 'vocalia-superior',
+    storageBucket: 'vocalia-superior.appspot.com',
+    messagingSenderId: '662368586343',
+    appId: '1:662368586343:web:52009b63db01e6348922c2',
+    locationId: 'us-east1',
+  }
+
+
 };
 
 /*

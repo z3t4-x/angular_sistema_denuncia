@@ -1,0 +1,172 @@
+
+<mat-toolbar>Búsqueda de denuncia/expedientes </mat-toolbar>
+<form [formGroup]="filtroForm">
+
+  <div class="row">
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Tipo de delito</mat-label>
+        <mat-select formControlName="tipoDelito">
+          <mat-option *ngFor="let tipo of tiposDelitos" [value]="tipo.idValor">
+            {{ tipo.dsValor }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Fecha de Ingreso de documento</mat-label>
+        <input matInput formControlName="fcIngresoDocumento" type="date">
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Fecha de hechos</mat-label>
+        <input matInput formControlName="fcHechos" type="date">
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Tipo de documento</mat-label>
+        <mat-select formControlName="tipoDocumento">
+          <mat-option *ngFor="let tipoDoc of tiposDocumentos" [value]="tipoDoc.idValor">
+            {{ tipoDoc.dsValor }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  </div>
+  <div class="row">
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>N° del documento</mat-label>
+        <input matInput formControlName="nmDocumento">
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>N° de denuncia</mat-label>
+        <input matInput formControlName="nmDenuncia">
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>N° de expediente preliminar</mat-label>
+        <input matInput formControlName="nmExpedienteInvPreliminar">
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Auxiliar investigador</mat-label>
+        <mat-select formControlName="investigador">
+          <mat-option *ngFor="let investigador of investigadores" [value]="investigador.idUsuario">
+            {{ investigador.nombre }}  {{ investigador.apellido }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>   
+
+
+
+  
+  <div class="row">
+    <div class="col">
+      <mat-form-field>
+        <mat-label>N° expediente preparatoria</mat-label>
+        <input matInput formControlName="nmExpedientePreparatoria">
+      </mat-form-field>
+    </div>   
+  </div>
+  <div>
+    <button class="btn-nuevo" mat-raised-button color="primary" (click)="filtrar2()">
+      <i class="fas fa-filter iconos" style="margin-right: 6px;"></i>Filtrar
+    </button>
+  </div>
+  
+
+  </div>
+
+<div class="container-fluid p-2">
+    <div class="example-container mat-elevation-z8">
+
+        <mat-table [dataSource]="dataSource" matSort>
+
+            <!-- Definición de la columna ID -->
+            <ng-container matColumnDef="idDenuncia">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+                <mat-cell *matCellDef="let row">{{row.idDenuncia}}</mat-cell>
+              </ng-container>
+
+
+
+              <ng-container matColumnDef="nmDenuncia">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{'N° Denuncia'}}</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{ row.nmDenuncia }}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="estadoDenuncia">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Estado </mat-header-cell>
+                <mat-cell *matCellDef="let row" style="font-weight: bold; color: #3f51b5;"> {{row.estadoDenuncia.dsValor}} </mat-cell>
+              </ng-container>
+
+            <ng-container matColumnDef="delito">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Delito</mat-header-cell>
+              <mat-cell *matCellDef="let row">{{row.tipoDelito.dsValor}}</mat-cell>
+          </ng-container>
+
+
+
+              <ng-container matColumnDef="nmExpedienteInvPreliminar">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{'N° etapa preparatoria'}}</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{ row.nmExpedienteInvPreliminar }}</mat-cell>
+              </ng-container>
+
+              
+            <ng-container matColumnDef="investigador">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                  Investigador </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                  {{row.investigador.nombre}} {{row.investigador.apellido}} </mat-cell>
+          </ng-container>
+
+              <ng-container matColumnDef="nmExpedientePreparatoria">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{'N° etapa preliminar'}}</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{ row.nmExpedientePreparatoria }}</mat-cell>
+              </ng-container>
+
+            <ng-container matColumnDef="nmDocumento">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>N° documento
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.nmDocumento}} </mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="acciones">
+                <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <button mat-button color="primary"
+                        [routerLink]="['/denunciaEditar', row.idDenuncia]"><mat-icon>edit</mat-icon></button>
+                    <button mat-button color="accent" (click)="eliminarDenuncia(row)"><mat-icon>delete</mat-icon></button>
+                </mat-cell> 
+            </ng-container>
+            <!-- Definición de la fila -->
+            <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+        </mat-table>
+
+        <mat-paginator [length]="dataSource.data.length" [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+
+    </div>
+
+</div>
+
+</form>

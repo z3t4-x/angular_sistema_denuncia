@@ -9,8 +9,6 @@ export class Usuario {
     fiscalia: CatalogosValores;
     mesaParte: CatalogosValores;
    // rolesDTO: RolesDTO[];
-
-
 }
 
 

@@ -8,7 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { DenunciaPersona } from 'src/app/_model/denunciaPersona';
 import { PersonaService } from 'src/app/_service/persona.service';
 import { Persona } from 'src/app/_model/persona';
-
+ 
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
@@ -21,6 +21,9 @@ import { catchError } from 'rxjs/operators';
 import { LstDenunciado, LstDenunciante, RequestDenunciaModif } from 'src/app/_model/denunciaModif';
 import { MatDialog } from '@angular/material/dialog';
 import { PersonaDialogComponent } from '../../dialog/persona-dialog/persona-dialog.component';
+import { Usuario } from 'src/app/_model/usuario';
+import { UsuarioService } from 'src/app/_service/usuario.service';
+import { FirebaseService } from 'src/app/_service/firebase.service';
 
 
 @Component({
@@ -31,10 +34,13 @@ import { PersonaDialogComponent } from '../../dialog/persona-dialog/persona-dial
 export class DenunciasEdicionComponent implements OnInit {
 
   errorMessage: string;
+  estadoFiltro : string;
 
   totalItems: number;
   pageSize: number = 10;
   pageIndex: number = 0;
+  linkFile: string | null = null;
+  nmArchivo: string | null = null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -48,16 +54,19 @@ export class DenunciasEdicionComponent implements OnInit {
   denunciadoForm: FormGroup;
 
   tablasLlenas: boolean = false;
+  chckFcProrroga: boolean = false;
 
   denuncia: Denuncia = new Denuncia();
 
-  public auxiliares: CatalogosValores[];
+ // public auxiliares: CatalogosValores[];
   public tiposDocumentos: CatalogosValores[];
   public tiposDelitos: CatalogosValores[];
   public estadosDenuncias: CatalogosValores[];
   public generos: CatalogosValores[];
   public tiposIdentificacion: CatalogosValores[];
   public grados: CatalogosValores[];
+  public investigadores: Usuario[];
+  public estadoExpedienteEtapas: CatalogosValores[];
 
   // public lstDenunciantes: DenunciaPersona[] = [];
 
@@ -95,6 +104,8 @@ export class DenunciasEdicionComponent implements OnInit {
     private denunciaService: DenunciaService,
     private personaService: PersonaService,
     private denunciaPersonaService: DenunciaPersonaService,
+    private usuarioService: UsuarioService,
+    private firebaseService: FirebaseService,
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
@@ -115,11 +126,25 @@ export class DenunciasEdicionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+   
+    this.obtenerUsuarios();
     this.cargarCatalogosValores();
     this.initializeForm();
     this.denunciadoForm = this.crearDenunciadosForm();
     this.denuncianteForm = this.crearDenunciantesForm();
     this.cargarDenuncia();
+
+    if( sessionStorage.getItem("codigoEstadoDenuncia")==null ){
+      this.estadoFiltro = 'DCIA';
+    }else{
+      this.estadoFiltro = ""+sessionStorage.getItem("codigoEstadoDenuncia");
+    }
+
+    if( this.estadoFiltro  == 'DCIA' ){
+      this.denuncianteForm;
+    }
+
+
   }
 
 
@@ -137,22 +162,28 @@ export class DenunciasEdicionComponent implements OnInit {
       fcHechos: new FormControl('', Validators.required),
       tipoDocumento: new FormControl('', Validators.required),
       nmDocumento: new FormControl('', Validators.required),
-      auxiliar: new FormControl('', Validators.required),
+      investigador: new FormControl('', Validators.required),
       dsDescripcion: new FormControl(''),
       nmDenuncia: new FormControl(''),
+      nmExpedienteInvPreliminar: new FormControl(''),
+      nmExpedientePreparatoria: new FormControl(''),
       estadoDenuncia: new FormControl(''),
       cdEstadoDenuncia: new FormControl(''),
       fcAltaDenuncia: new FormControl(''),
       fcPlazo: new FormControl(''),
-
       mesaParte: new FormControl(''),
-      investigador: new FormControl(''),
       fiscalia: new FormControl(''),
-
       fcAltaFila: new FormControl(''),
       cdUsuAlta: new FormControl(''),
       fcModifFila: new FormControl(''),
       cdUsuModif: new FormControl(''),
+      estadoExpedienteEtapa: new FormControl('', Validators.required),
+    //  fcProrroga: new FormControl('', Validators.required)
+     fcProrroga: new FormControl({ value: '', disabled: true }),
+     nmArchivo:  new FormControl(''),
+     subirArchivo: new FormControl(''),
+     linkFile: new FormControl('')
+
     });
   }
 
@@ -495,7 +526,7 @@ revertirEliminarDenunciado(idPersona: number) {
       this.catalogoValoresService.buscarPorNombreCatalogo(
         'ESTADO DE LA DENUNCIA'
       ),
-      this.catalogoValoresService.buscarPorNombreCatalogo('AUXILIAR'),
+      this.catalogoValoresService.buscarPorNombreCatalogo('ETAPAS DEL EXPEDIENTE'),
       this.catalogoValoresService.buscarPorNombreCatalogo('TIPOS DE DELITOS'),
       this.catalogoValoresService.buscarPorNombreCatalogo('TIPOS DE DOCUMENTO'),
       this.catalogoValoresService.buscarPorNombreCatalogo('SEXO'),
@@ -507,14 +538,14 @@ revertirEliminarDenunciado(idPersona: number) {
     ]).subscribe(
       ([
         estadosDenuncias,
-        auxiliares,
+        estadoExpedienteEtapas,
         tiposDelitos,
         tiposDocumentos,
         generos,
         tiposIdentificacion,
         grados,
       ]) => {
-        this.auxiliares = auxiliares;
+        this.estadoExpedienteEtapas = estadoExpedienteEtapas;
         this.tiposDocumentos = tiposDocumentos;
         this.tiposDelitos = tiposDelitos;
         this.estadosDenuncias = estadosDenuncias;
@@ -526,7 +557,7 @@ revertirEliminarDenunciado(idPersona: number) {
     );
   }
 
-  private filtrarEstadoDenuncia(estadosDenuncias: CatalogosValores[]) : any {
+  public filtrarEstadoDenuncia(estadosDenuncias: CatalogosValores[]) : any {
 
     if( this.denunciaForm.get('cdEstadoDenuncia')!=null ){
 
@@ -641,11 +672,13 @@ revertirEliminarDenunciado(idPersona: number) {
       idDenuncia: datosDenunciaForm.idDenuncia,
       fcAltaDenuncia: datosDenunciaForm.fcAltaDenuncia,
       fcHechos: datosDenunciaForm.fcHechos,
-
-      auxiliar: {
-        idValor: datosDenunciaForm.auxiliar,
+/*
+      investigador: {
+        idUsuario: datosDenunciaForm.investigador,
+        nombre:'',
+        apellido:''
       },
-
+*/
       tipoDelito: {
         idValor: datosDenunciaForm.tipoDelito,
       },
@@ -677,12 +710,18 @@ revertirEliminarDenunciado(idPersona: number) {
 
       investigador: {
         idUsuario: datosDenunciaForm.investigador,
+        nombre:'',
+        apellido:''
       },
 
       fcAltaFila: fcAltaFormatted,
       cdUsuAlta: datosDenunciaForm.cdUsuAlta,
       fcModifFila: fcModifFormatted,
-      cdUsuModif: datosDenunciaForm.cdUsuModif
+      cdUsuModif: datosDenunciaForm.cdUsuModif,
+      fcProrroga: datosDenunciaForm.fcProrroga,
+      estadoExpedienteEtapa: {
+        idValor: datosDenunciaForm.estadoExpedienteEtapa
+      },
     };
 
     this.denunciaService.modificarDenuncia(denuncia).subscribe(
@@ -723,13 +762,15 @@ revertirEliminarDenunciado(idPersona: number) {
             tipoDelito: denuncia.tipoDelito? denuncia.tipoDelito.idValor:'',
             fcHechos: denuncia.fcHechos,
             nmDenuncia: denuncia.nmDenuncia,
+            nmExpedientePreparatoria:denuncia.nmExpedientePreparatoria,
+            nmExpedienteInvPreliminar: denuncia.nmExpedienteInvPreliminar,
             estadoDenuncia: denuncia.estadoDenuncia? denuncia.estadoDenuncia.idValor:'',
             cdEstadoDenuncia: denuncia.estadoDenuncia? denuncia.estadoDenuncia.cdCodigo:'',
             fcPlazo: denuncia.fcPlazo,
             tipoDocumento: denuncia.tipoDocumento? denuncia.tipoDocumento.idValor:'',
             fcIngresoDocumento: denuncia.fcIngresoDocumento,
             nmDocumento: denuncia.nmDocumento,
-            auxiliar: denuncia.auxiliar? denuncia.auxiliar.idValor:'',
+            estadoExpedienteEtapa: denuncia.estadoExpedienteEtapa? denuncia.estadoExpedienteEtapa.idValor:'',
             fiscalia: denuncia.fiscalia? denuncia.fiscalia.idValor:'',
             mesaParte: denuncia.mesaParte? denuncia.mesaParte.idValor:'',
             investigador: denuncia.investigador? denuncia.investigador.idUsuario:'',
@@ -737,7 +778,10 @@ revertirEliminarDenunciado(idPersona: number) {
             fcAltaFila: denuncia.fcAltaFila,
             cdUsuAlta: denuncia.cdUsuAlta,
             fcModifFila: denuncia.fcModifFila,
-            cdUsuModif: denuncia.cdUsuModif
+            cdUsuModif: denuncia.cdUsuModif,
+            fcProrroga: denuncia.fcProrroga,
+            nmArchivo: denuncia?.nmArchivo,
+            linkFile: denuncia?.linkFile,
           });
 
           this.cargarDenunciantes(denunciaId);
@@ -888,7 +932,65 @@ abrirDialogoPersonaDenunciado(): void {
 }
 
   
+
+/**
+ * lista investigadores
+ */
+
+
+obtenerUsuarios(): void {
+  this.usuarioService.obtenerUsuariosPorRolYFiscalia().subscribe(
+    (data) => {
+      this.investigadores = data;
+    },
+    (error) => {
+      console.log('Error al obtener los usuarios', error);
+    }
+  );
+}
+
+
+onChckFcProrrogaChange(checked: boolean): void {
+  const fcProrrogaControl = this.denunciaForm.get('fcProrroga');
   
+  if (fcProrrogaControl) {
+    if (checked) {
+      fcProrrogaControl.enable();
+      fcProrrogaControl.setValidators([Validators.required]);
+    } else {
+      fcProrrogaControl.disable();
+      fcProrrogaControl.clearValidators();
+    }
+    
+    fcProrrogaControl.updateValueAndValidity();
+  }
+}
+
+
+
+subirArchivo(file: File | undefined): void {
+  if (file) {
+  
+    this.firebaseService.uploadFile(file).subscribe(
+      (downloadURL: string | null) => {
+        this.linkFile = downloadURL;
+        this.nmArchivo = file.name;
+
+        console.log("nombre archivo" +'/files/'+downloadURL);
+        console.log("link firebase" + this.linkFile);
+        console.log("nombre archivo" + this.nmArchivo);
+      },
+      (error: any) => {
+        console.error('Error al subir el archivo:', error);
+      }
+    );
+  }
+}
+
+  
+
+
+
 
 
 }

@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col">
       <mat-form-field>
-        <mat-label>Tipo de Delito</mat-label>
+        <mat-label>Tipo de delito</mat-label>
         <mat-select formControlName="tipoDelito">
           <mat-option *ngFor="let tipo of tiposDelitos" [value]="tipo.idValor">
             {{ tipo.dsValor }}
@@ -14,21 +14,21 @@
     </div>
     <div class="col">
       <mat-form-field>
-        <mat-label>Fecha de Ingreso de Documento</mat-label>
+        <mat-label>Fecha de Ingreso de documento</mat-label>
         <input matInput formControlName="fcIngresoDocumento" type="date">
       </mat-form-field>
     </div>
 
     <div class="col">
       <mat-form-field>
-        <mat-label>Fecha de Hechos</mat-label>
+        <mat-label>Fecha de hechos</mat-label>
         <input matInput formControlName="fcHechos" type="date">
       </mat-form-field>
     </div>
 
     <div class="col">
       <mat-form-field>
-        <mat-label>Tipo de Documento</mat-label>
+        <mat-label>Tipo de documento</mat-label>
         <mat-select formControlName="tipoDocumento">
           <mat-option *ngFor="let tipoDoc of tiposDocumentos" [value]="tipoDoc.idValor">
             {{ tipoDoc.dsValor }}
@@ -42,31 +42,61 @@
 
     <div class="col">
       <mat-form-field>
-        <mat-label>Nombre del Documento</mat-label>
+        <mat-label>N° del documento</mat-label>
         <input matInput formControlName="nmDocumento">
       </mat-form-field>
     </div>
 
     <div class="col">
       <mat-form-field>
-        <mat-label>Auxiliar</mat-label>
-        <mat-select formControlName="auxiliar">
-          <mat-option *ngFor="let aux of auxiliares" [value]="aux.idValor">
-            {{ aux.dsValor }}
+        <mat-label>Auxiliar investigador</mat-label>
+        <mat-select formControlName="investigador">
+          <mat-option *ngFor="let investigador of investigadores" [value]="investigador.idUsuario">
+            {{ investigador.nombre }} {{ investigador.apellido }}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
-    <div class="col-md-6"> <!-- Ajusta el tamaño de la columna según tus necesidades -->
-      <mat-form-field class="w-100"> <!-- Ajusta el tamaño del mat-form-field -->
-        <mat-label>Descripción de la Denuncia</mat-label>
-        <textarea matInput formControlName="dsDescripcion" rows="7"></textarea> <!-- Ajusta el tamaño del textarea con rows -->
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Archivo</mat-label>
+        <input placeholder="Seleccionar archivo" formControlName="subirArchivo" type="file" style="opacity: 0; position: absolute; z-index: -1" #fileInput> 
+        <input matInput placeholder="Archivo seleccionado" (click)="fileInput?.click()" readonly>
+        
+        <mat-icon matSuffix>attach_file</mat-icon>
+     
       </mat-form-field>
+      <mat-label>{{ nmArchivo }}</mat-label>
+      <button type="button" class="mr-3 btn btn-danger btn-sm" (click)="subirArchivo(fileInput?.files?.[0])">
+        <i *ngIf="cargando" class="fas fa-spinner fa-spin"></i>
+        <span *ngIf="!cargando">Subir archivo</span>
+      </button>
+      
+    </div>
+    
+    
+
+    <div class="col">
+
     </div>
     
 
+    
+    
 
+    
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="w-100">
+        <mat-label>Descripción de la Denuncia</mat-label>
+        <textarea matInput formControlName="dsDescripcion" rows="7"></textarea>
+      </mat-form-field>
+      <div class="character-count">{{ characterCount }} / 1000 caracteres</div>
+    </div>
   </div>
 
 

@@ -33,10 +33,13 @@ export class UsuarioService {
     return this.http.get<RequestUsuario>(`${this.baseUrl}/${id}`);
   }
 
-  obtenerUsuariosPorRolYFiscalia(): Observable<RequestUsuario[]> {
+  obtenerUsuariosPorRolYFiscalia(): Observable<Usuario[]> {
     const url = `${this.baseUrl}/usuarioRolFiscalia`;
-    return this.http.get<RequestUsuario[]>(url);
+    return this.http.get<Usuario[]>(url);
   }
+
+
+
 
 
 }
