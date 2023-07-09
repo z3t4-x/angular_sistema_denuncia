@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   isLoggedIn: boolean = false;
   loginForm: FormGroup;
   loginData: LoginModel;
+  errorMessage: string;
 
   constructor(private formBuilder: FormBuilder, private loginService: LoginService, private router: Router) {
 
@@ -42,11 +43,7 @@ export class LoginComponent implements OnInit {
       response => {
         const token = response.token;
         const cdUsuario = response.cdUsuario;
-        const authorities = response.authorities;
-        // Almacenar el token y otros datos en el almacenamiento local
-        
-        console.log("token ==> " + token);
-        
+        const authorities = response.authorities;    
         
         localStorage.setItem('token', token);
         localStorage.setItem('cdUsuario', cdUsuario);
@@ -56,6 +53,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/reporteDenuncia']);
       },
       error => {
+        this.errorMessage = error.error;
         console.error('Error en el login:', error);
       }
     );

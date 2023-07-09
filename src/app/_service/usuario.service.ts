@@ -18,7 +18,7 @@ export class UsuarioService {
   }
 
   modificarUsuario(usuario: RequestUsuario): Observable<RequestUsuario> {
-    return this.http.put<RequestUsuario>(`${this.baseUrl}`, usuario);
+    return this.http.put<RequestUsuario>(`${this.baseUrl}/modificar`, usuario);
   }
 
   listarUsuarios(): Observable<RequestUsuario[]> {

@@ -107,7 +107,8 @@ crearUsuariosForm(): FormGroup {
         cdCodigo: ''
       },
       rolesDTO:[{
-        idRol: datosUsuarioForm.rol
+        idRol: datosUsuarioForm.rol,
+        rolNombre: '',
       }]
 
 };
