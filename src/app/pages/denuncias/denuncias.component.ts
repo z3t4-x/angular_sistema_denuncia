@@ -9,6 +9,9 @@ import 'moment-timezone';
 import { MatDialog } from '@angular/material/dialog';
 import { RequestDenunciaHistorico } from 'src/app/_model/denunciaHistorico';
 import { HistoricoDialogComponent } from '../dialog/historico-dialog/historico-dialog.component';
+import { UsuarioService } from 'src/app/_service/usuario.service';
+import { rolesDTO } from 'src/app/_model/rol';
+import { tap } from 'rxjs/operators';
 declare var $: any;
 
 @Component({
@@ -29,9 +32,14 @@ export class DenunciasComponent implements OnInit {
   tooltipStyles = {};
 
   estadoFiltro : string;
+  esAdministrador:boolean= false;
+  esArchivador:boolean= false;
+  esAuxiliarInvestigador:boolean= false;
+  esMesaDePartes:boolean= false;
 
   constructor(
     private denunciaService: DenunciaService,
+    private usuarioService: UsuarioService,
     private dialog: MatDialog
 
   ) {
@@ -39,6 +47,8 @@ export class DenunciasComponent implements OnInit {
    }
 
   ngOnInit(): void {
+
+    this.obtenerRolesUsuario();
 
     if( sessionStorage.getItem("codigoEstadoDenuncia")==null ){
       this.estadoFiltro = 'DCIA';
@@ -155,8 +165,38 @@ export class DenunciasComponent implements OnInit {
     });
   }
   
-  
-  
+/*
+  obtenerRolesUsuario() {
+    return this.usuarioService.obtenerRolesUsuario().pipe(
+      tap((roles: rolesDTO[]) => {
+        console.log('Roles obtenidos:', roles);
+        this.esAdministrador = roles.some(rol => rol.rolNombre === 'ADMINISTRADOR');
+        this.esArchivador = roles.some(rol => rol.rolNombre === 'ARCHIVADOR');
+        this.esAuxiliarInvestigador = roles.some(rol => rol.rolNombre === 'AUXILIAR INVESTIGADOR');
+        this.esMesaDePartes = roles.some(rol => rol.rolNombre === 'MESA DE PARTES');
+        console.log("Administrador => ", this.esAdministrador);
+        console.log("Archivador => ", this.esArchivador);
+        console.log("Auxiliar Investigador => ", this.esAuxiliarInvestigador);
+        console.log("Mesa de Partes => ", this.esMesaDePartes);
+      })
+    );
+  }
+  */
+  obtenerRolesUsuario() {
+    this.usuarioService.obtenerRolesUsuario().subscribe((roles: rolesDTO[]) => {
+
+      this.esAdministrador = roles.some(rol => rol.rolNombre === 'ADMINISTRADOR');
+      this.esArchivador = roles.some(rol => rol.rolNombre === 'ARCHIVADOR');
+      this.esAuxiliarInvestigador = roles.some(rol => rol.rolNombre === 'AUXILIAR INVESTIGADOR');
+      this.esMesaDePartes = roles.some(rol => rol.rolNombre === 'MESA DE PARTES');
+      console.log("Administrador => ", this.esAdministrador);
+      console.log("Archivador => ", this.esArchivador);
+      console.log("Auxiliar Investigador => ", this.esAuxiliarInvestigador);
+      console.log("Mesa de Partes => ", this.esMesaDePartes);
+    });
+  }
 
 
+
+  
 }

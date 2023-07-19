@@ -6,8 +6,8 @@
 
 
   <input type="hidden" name="idDenuncia" formControlName="idDenuncia">
-
-    <div class="row">
+<fieldset [disabled]="esArchivador">
+    <div class="row"  >
       <div class="col" *ngIf="estadoFiltro === 'DCIA' || estadoFiltro === 'PRM' || estadoFiltro === 'PRPA'">
         <mat-form-field>
           <mat-label>N° {{ estadoFiltro === 'DCIA' ? 'denuncia' : 'expediente' }}</mat-label>
@@ -19,7 +19,7 @@
         <div class="col">
             <mat-form-field>
               <mat-label>Etapa</mat-label>
-              <mat-select formControlName="estadoDenuncia">
+              <mat-select formControlName="estadoDenuncia" [disabled]="esArchivador">
                 <mat-option *ngFor="let estado of estadosDenuncias" [value]="estado.idValor">
                   {{ estado.dsValor }}
                 </mat-option>
@@ -47,7 +47,7 @@
     <div class="col">
       <mat-form-field>
         <mat-label>Tipo de Delito</mat-label>
-        <mat-select formControlName="tipoDelito">
+        <mat-select formControlName="tipoDelito" [disabled]="esArchivador">
           <mat-option *ngFor="let tipo of tiposDelitos" [value]="tipo.idValor">
             {{ tipo.dsValor }}
           </mat-option>
@@ -71,7 +71,7 @@
     <div class="col">
       <mat-form-field>
         <mat-label>Tipo de Documento</mat-label>
-        <mat-select formControlName="tipoDocumento">
+        <mat-select formControlName="tipoDocumento" [disabled]="esArchivador">
           <mat-option *ngFor="let tipoDoc of tiposDocumentos" [value]="tipoDoc.idValor">
             {{ tipoDoc.dsValor }}
           </mat-option>
@@ -80,6 +80,8 @@
     </div>
 
   </div>
+
+
   <div class="row">
 
     <div class="col">
@@ -92,7 +94,7 @@
     <div class="col">
       <mat-form-field>
         <mat-label>Auxiliar investigador</mat-label>
-        <mat-select formControlName="investigador">
+        <mat-select formControlName="investigador" [disabled]="esArchivador">
           <mat-option *ngFor="let investigador of investigadores" [value]="investigador.idUsuario">
             {{ investigador.nombre }} {{ investigador.apellido }}
           </mat-option>
@@ -103,7 +105,7 @@
     <div class="col">
       <mat-form-field>
         <mat-label>Estado</mat-label>
-        <mat-select formControlName="estadoExpedienteEtapa">
+        <mat-select formControlName="estadoExpedienteEtapa"  [disabled]="esArchivador">
           <mat-option *ngFor="let estadoEtapa of estadoExpedienteEtapas" [value]="estadoEtapa.idValor">
             {{ estadoEtapa.dsValor }}
           </mat-option>
@@ -123,41 +125,35 @@
 
   </div>
 
+
   <div class="row">
 
     <div class="col">
-      <mat-form-field>
-        <mat-label>Archivo</mat-label>
-        <input placeholder="Seleccionar archivo"  formControlName="subirArchivo" type="file" style="opacity: 0; position: absolute; z-index: -1" #fileInput> 
-        <input matInput placeholder="Archivo seleccionado" (click)="fileInput?.click()" readonly>
-        
-        <mat-icon matSuffix>attach_file</mat-icon>
-     
+      <mat-form-field>        
+        <input  placeholder="Seleccionar archivo"  formControlName="subirArchivo" type="file" style="opacity: 0; position: absolute; z-index: -1" #fileInput> 
+        <input matInput [placeholder]="nmArchivo ? '' : 'Archivo seleccionado'" (click)="fileInput?.click()" readonly>
+        <mat-label>{{ nmArchivo }}</mat-label>
+        <mat-icon matSuffix>attach_file</mat-icon>     
       </mat-form-field> 
-      <button type="button" class="mr-3 btn btn-danger btn-sm" (click)="subirArchivo(fileInput?.files?.[0])">Subir archivo</button>
+
+          
+      <button type="button" class="mr-3 btn btn-danger btn-sm" (click)="subirArchivo(fileInput?.files?.[0])">
+        <i *ngIf="cargando" class="fas fa-spinner fa-spin"></i>
+        <span *ngIf="!cargando">Subir archivo</span>
+      </button>
     </div>
 
 
     <div class="col" >
-      <mat-form-field>
-       
+      <mat-form-field>       
         <input matInput formControlName="nmArchivo" readonly="true">
       </mat-form-field>
-
-      <a [href]="denunciaForm.get('linkFile')?.value" [download]="denunciaForm.get('linkFile')?.value" target="_blank">
-        <button type="button" class="mr-3 btn btn-danger btn-sm">
+      <a  [href]="denunciaForm.get('linkFile')?.value" [download]="denunciaForm.get('linkFile')?.value" target="_blank">
+        <button  type="button" class="mr-3 btn btn-danger btn-sm">
           <i class="fas fa-cloud-download-alt"></i>
         </button>
-      </a>
-      
-      
-      
+      </a>       
     </div>
-
-    
-
-
-
 
     <div class="col-md-6">
       <mat-form-field class="w-100">
@@ -170,6 +166,55 @@
     </div>
 
   </div>
+
+</fieldset>
+
+<!-- *ngIf="esArchivador()" -->
+  <div class="row" *ngIf="esArchivador">
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Anaqueles</mat-label>
+        <mat-select formControlName="anaquel">
+          <mat-option *ngFor="let anaquele of anaquelesData" [value]="anaquele">
+            {{ anaquele }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Banda</mat-label>
+        <mat-select  formControlName="banda">
+          <mat-option *ngFor="let bandaItem of bandaData" [value]="bandaItem">
+            {{ bandaItem }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>Paquete</mat-label>
+        <mat-select  formControlName="paquete">
+          <mat-option *ngFor="let paqueteItem of paqueteData" [value]="paqueteItem">
+            {{ paqueteItem }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col">
+      <mat-form-field>
+        <mat-label>N° archivo</mat-label>
+        <input matInput formControlName="codigoArchivo">
+      </mat-form-field>
+    </div>
+
+  </div>
+
+
 
 
   <div *ngIf="!['DCIA', 'PRM', 'PRPA'].includes(estadoFiltro)">   <!-- Código del formulario aquí -->
@@ -278,7 +323,7 @@
     </div>
 
 
-    <button mat-raised-button color="primary" class="mb-3 mt-5" (click)="agregarDenunciante()">Agregar denunciante</button>
+    <button mat-raised-button  color="primary" class="mb-3 mt-5" (click)="agregarDenunciante()">Agregar denunciante</button>
 
 
     <div class="container-fluid">
@@ -481,7 +526,7 @@
     </div>
 
 
-    <button mat-raised-button color="primary" class="mt-5 mb-3" (click)="agregarDenunciado()">Agregar denunciando </button>
+    <button mat-raised-button [disabled]="esArchivador" color="primary" class="mt-5 mb-3" (click)="agregarDenunciado()">Agregar denunciando </button>
 
     <div class="container-fluid">
       <div class="example-container mat-elevation-z8">
@@ -556,7 +601,7 @@
           <ng-container matColumnDef="acciones">
             <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
             <mat-cell *matCellDef="let row">
-              <button mat-button color="accent" *ngIf="row.itBaja=='N'"
+              <button mat-button color="accent" *ngIf="row.itBaja=='N'" [disabled]="esArchivador"
                 (click)="eliminarDenunciado(row.persona.idPersona)"><mat-icon>delete</mat-icon></button>
               <button mat-button color="accent" *ngIf="row.itBaja=='S'"
                 (click)="revertirEliminarDenunciado(row.persona.idPersona)"><mat-icon>undo</mat-icon></button>

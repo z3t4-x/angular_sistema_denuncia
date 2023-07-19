@@ -28,6 +28,12 @@ export interface RequestDenunciaModif {
   cdUsuModif: string;
   estadoExpedienteEtapa: CatalogosValores;
   fcProrroga ?:string | null;
+  linkFile?:string | null;
+  nmArchivo?:string | null;
+  anaquel? : number| null;
+  banda? :  number | null;
+  paquete? : number | null;
+  codigoArchivo?: string | null;
 }
 
 export interface LstDenunciado {

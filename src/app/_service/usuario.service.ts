@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { RequestUsuario, Usuario } from '../_model/usuario';
+import { rolesDTO } from '../_model/rol';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,10 @@ export class UsuarioService {
   }
 
 
-
+  obtenerRolesUsuario(): Observable<rolesDTO[]> {
+    const url = `${this.baseUrl}/usuario`;
+    return this.http.get<rolesDTO[]>(url);
+  }
 
 
 }

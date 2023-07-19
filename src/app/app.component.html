@@ -41,28 +41,28 @@
                 <span>Búsqueda expedientes/denuncias</span>
             </button>
             <mat-divider></mat-divider>
-            <button mat-menu-item  routerLink="/personas" style="cursor: pointer">
+            <button mat-menu-item *ngIf="esAdministrador || esMesaDePartes || esAuxiliarInvestigador" routerLink="/personas" style="cursor: pointer">
                 <i class="fas fa-users iconos"></i>
                 <span>Registrar Persona</span>
             </button>
             <mat-divider></mat-divider>
-            <button mat-menu-item  (click)="redireccionarListaDenuncia('DCIA')" style="cursor: pointer">
+            <button mat-menu-item *ngIf="esAdministrador || esMesaDePartes || esAuxiliarInvestigador" (click)="redireccionarListaDenuncia('DCIA')" style="cursor: pointer">
                 <i class="fa fa-file-medical-alt iconos"></i>
                 <span>Registrar Denuncia</span>
             </button>
             <mat-divider></mat-divider>
-            <button mat-menu-item  (click)="redireccionarListaDenuncia('PRM')" style="cursor: pointer">
+            <button mat-menu-item *ngIf="esAdministrador || esMesaDePartes || esAuxiliarInvestigador" (click)="redireccionarListaDenuncia('PRM')" style="cursor: pointer">
                 <i class="far fa-folder iconos"></i>
                 <span>Etapa preliminar</span>
             </button>
             <mat-divider></mat-divider>
-            <button mat-menu-item  (click)="redireccionarListaDenuncia('PRPA')" style="cursor: pointer">
+            <button mat-menu-item *ngIf="esAdministrador || esMesaDePartes || esAuxiliarInvestigador" (click)="redireccionarListaDenuncia('PRPA')" style="cursor: pointer">
                 <i class="fas fa-folder iconos"></i>
                 <span>Etapa preparatoria</span>
             </button>
             
             <mat-divider></mat-divider>            
-            <button mat-menu-item  routerLink="/catalogos" style="cursor: pointer">
+            <button mat-menu-item *ngIf="esAdministrador || esMesaDePartes" routerLink="/catalogos" style="cursor: pointer">
                 <i class="fab fa-steam iconos"></i>
                 <span>Registrar Catalogos</span>
             </button>
@@ -77,7 +77,7 @@
 
             <mat-divider></mat-divider>
 
-            <button mat-menu-item  routerLink="/usuario" style="cursor: pointer">
+            <button mat-menu-item *ngIf="esAdministrador || esMesaDePartes" routerLink="/usuario" style="cursor: pointer">
                 <i class="fas fa-users-cog iconos"></i>
                 <span>Registrar Usuario</span>
             </button>

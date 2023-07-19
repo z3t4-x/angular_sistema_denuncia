@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CatalogosValores } from 'src/app/_model/catalogosValores';
 import { CatalogosValoresService } from 'src/app/_service/catalogos-valores.service';
-import { forkJoin, map } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {  Denuncia } from 'src/app/_model/denuncia';
 import { MatPaginator } from '@angular/material/paginator';
@@ -21,10 +21,13 @@ import { catchError } from 'rxjs/operators';
 import { LstDenunciado, LstDenunciante, RequestDenunciaModif } from 'src/app/_model/denunciaModif';
 import { MatDialog } from '@angular/material/dialog';
 import { PersonaDialogComponent } from '../../dialog/persona-dialog/persona-dialog.component';
-import { Usuario } from 'src/app/_model/usuario';
+import { RolesDTO, Usuario } from 'src/app/_model/usuario';
 import { UsuarioService } from 'src/app/_service/usuario.service';
 import { FirebaseService } from 'src/app/_service/firebase.service';
-
+import { RolService } from 'src/app/_service/rol.service';
+import { rolesDTO } from 'src/app/_model/rol';
+import { of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-denuncias-edicion',
@@ -41,6 +44,13 @@ export class DenunciasEdicionComponent implements OnInit {
   pageIndex: number = 0;
   linkFile: string | null = null;
   nmArchivo: string | null = null;
+  cargando: boolean = false;
+
+  anaquel: number | null = null;
+  banda: number | null = null;
+  paquete: number | null = null;
+
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -56,6 +66,11 @@ export class DenunciasEdicionComponent implements OnInit {
   tablasLlenas: boolean = false;
   chckFcProrroga: boolean = false;
 
+  esAdministrador:boolean= false;
+  esArchivador:boolean= false;
+  esAuxiliarInvestigador:boolean= false;
+  esMesaDePartes:boolean= false;
+
   denuncia: Denuncia = new Denuncia();
 
  // public auxiliares: CatalogosValores[];
@@ -67,6 +82,7 @@ export class DenunciasEdicionComponent implements OnInit {
   public grados: CatalogosValores[];
   public investigadores: Usuario[];
   public estadoExpedienteEtapas: CatalogosValores[];
+  public roles: rolesDTO[];
 
   // public lstDenunciantes: DenunciaPersona[] = [];
 
@@ -133,6 +149,7 @@ export class DenunciasEdicionComponent implements OnInit {
     this.denunciadoForm = this.crearDenunciadosForm();
     this.denuncianteForm = this.crearDenunciantesForm();
     this.cargarDenuncia();
+    this.obtenerRolesUsuario();
 
     if( sessionStorage.getItem("codigoEstadoDenuncia")==null ){
       this.estadoFiltro = 'DCIA';
@@ -182,14 +199,26 @@ export class DenunciasEdicionComponent implements OnInit {
      fcProrroga: new FormControl({ value: '', disabled: true }),
      nmArchivo:  new FormControl(''),
      subirArchivo: new FormControl(''),
-     linkFile: new FormControl('')
+     linkFile: new FormControl(''),
+     // campos del archivdero
+     anaquel : new FormControl(''),
+     banda : new FormControl(''),
+     paquete : new FormControl(''),
+     codigoArchivo : new FormControl(''),
 
     });
   }
 
   public formatearFechaNacimiento(fcNacimiento: string): string {
-    return fcNacimiento ? moment(fcNacimiento).format('yyyy-MM-dd') : '';
+    if (fcNacimiento) {
+      const fecha = moment(fcNacimiento, 'YYYY-MM-DD'); // Ajusta el formato aquí si es necesario
+      if (fecha.isValid()) {
+        return fecha.format('YYYY-MM-DD');
+      }
+    }
+    return '';
   }
+  
 
   //########################################
   //##          DATOS DENUNCIANTE
@@ -545,10 +574,10 @@ revertirEliminarDenunciado(idPersona: number) {
         tiposIdentificacion,
         grados,
       ]) => {
-        this.estadoExpedienteEtapas = estadoExpedienteEtapas;
-        this.tiposDocumentos = tiposDocumentos;
-        this.tiposDelitos = tiposDelitos;
         this.estadosDenuncias = estadosDenuncias;
+        this.estadoExpedienteEtapas = estadoExpedienteEtapas;
+        this.tiposDelitos = tiposDelitos;
+        this.tiposDocumentos = tiposDocumentos;
         this.generos = generos;
         this.tiposIdentificacion = tiposIdentificacion;
         this.grados = grados;
@@ -564,7 +593,9 @@ revertirEliminarDenunciado(idPersona: number) {
       let cdEstadoDenunciaForm : any = this.denunciaForm.get('cdEstadoDenuncia');
 
       if( cdEstadoDenunciaForm.value == 'DCIA'){//Denuncia
-        return estadosDenuncias.filter(x=>x.cdCodigo=='DCIA'||x.cdCodigo=='OTR'||x.cdCodigo=='DST'||x.cdCodigo=='PRM');
+        console.log("CODIGO ESTADO => ", cdEstadoDenunciaForm);
+        
+        return estadosDenuncias.filter(x=>x.cdCodigo=='DCIA'||x.cdCodigo=='OTR'||x.cdCodigo=='PRM');
       }else if( cdEstadoDenunciaForm.value == 'OTR'){//Otros
         return estadosDenuncias.filter(x=>x.cdCodigo=='OTR');
       }else if( cdEstadoDenunciaForm.value == 'DST'){//Desestimar
@@ -572,7 +603,7 @@ revertirEliminarDenunciado(idPersona: number) {
       }else if( cdEstadoDenunciaForm.value == 'PRM'){//Preliminar
         return estadosDenuncias.filter(x=>x.cdCodigo=='PRM'||x.cdCodigo=='OTR'||x.cdCodigo=='PRPA'||x.cdCodigo=='ARCH');
       }else if( cdEstadoDenunciaForm.value == 'PRPA'){//Preparatoria
-        return estadosDenuncias.filter(x=>x.cdCodigo=='PRPA'||x.cdCodigo=='ARCH');
+        return estadosDenuncias.filter(x=>x.cdCodigo=='PRPA'||x.cdCodigo=='INTR' || 'OTR');
       }else {
         return [];
       }
@@ -672,13 +703,7 @@ revertirEliminarDenunciado(idPersona: number) {
       idDenuncia: datosDenunciaForm.idDenuncia,
       fcAltaDenuncia: datosDenunciaForm.fcAltaDenuncia,
       fcHechos: datosDenunciaForm.fcHechos,
-/*
-      investigador: {
-        idUsuario: datosDenunciaForm.investigador,
-        nombre:'',
-        apellido:''
-      },
-*/
+
       tipoDelito: {
         idValor: datosDenunciaForm.tipoDelito,
       },
@@ -722,6 +747,15 @@ revertirEliminarDenunciado(idPersona: number) {
       estadoExpedienteEtapa: {
         idValor: datosDenunciaForm.estadoExpedienteEtapa
       },
+
+      linkFile: datosDenunciaForm.linkFile,
+      nmArchivo: datosDenunciaForm.nmArchivo,
+
+      anaquel: datosDenunciaForm.anaquel,
+      banda: datosDenunciaForm.banda,
+      paquete: datosDenunciaForm.paquete,
+      codigoArchivo: datosDenunciaForm.codigoArchivo
+
     };
 
     this.denunciaService.modificarDenuncia(denuncia).subscribe(
@@ -782,6 +816,11 @@ revertirEliminarDenunciado(idPersona: number) {
             fcProrroga: denuncia.fcProrroga,
             nmArchivo: denuncia?.nmArchivo,
             linkFile: denuncia?.linkFile,
+            anaquel: denuncia?.anaquel,
+            banda: denuncia?.banda,
+            paquete: denuncia?.paquete,
+            codigoArchivo: denuncia?.codigoArchivo
+
           });
 
           this.cargarDenunciantes(denunciaId);
@@ -970,18 +1009,20 @@ onChckFcProrrogaChange(checked: boolean): void {
 
 subirArchivo(file: File | undefined): void {
   if (file) {
-  
+    this.cargando = true; // Activar el estado de carga
     this.firebaseService.uploadFile(file).subscribe(
       (downloadURL: string | null) => {
-        this.linkFile = downloadURL;
-        this.nmArchivo = file.name;
+        this.denunciaForm.get('linkFile')?.patchValue(downloadURL);
+        this.denunciaForm.get('nmArchivo')?.patchValue(file.name);
 
         console.log("nombre archivo" +'/files/'+downloadURL);
         console.log("link firebase" + this.linkFile);
         console.log("nombre archivo" + this.nmArchivo);
+        this.cargando = false; 
       },
       (error: any) => {
         console.error('Error al subir el archivo:', error);
+        this.cargando = false; 
       }
     );
   }
@@ -989,8 +1030,46 @@ subirArchivo(file: File | undefined): void {
 
   
 
+anaquelesData: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+bandaData: number[] = [1, 2, 3, 4, 5];
+paqueteData: number[] = [1, 2, 3, 4];
 
+
+/*
+obtenerRolesUsuario() {
+  return this.usuarioService.obtenerRolesUsuario().pipe(
+    tap((roles: rolesDTO[]) => {
+      this.esAdministrador = roles.some(rol => rol.rolNombre === 'ADMINISTRADOR');
+      this.esArchivador = roles.some(rol => rol.rolNombre === 'ARCHIVADOR');
+      this.esAuxiliarInvestigador = roles.some(rol => rol.rolNombre === 'AUXILIAR INVESTIGADOR');
+      this.esMesaDePartes = roles.some(rol => rol.rolNombre === 'MESA DE PARTES');
+      console.log("Administrador => ", this.esAdministrador);
+      console.log("Archivador => ", this.esArchivador);
+      console.log("Auxiliar Investigador => ", this.esAuxiliarInvestigador);
+      console.log("Mesa de Partes => ", this.esMesaDePartes);
+    })
+  );
+}
+*/
+
+obtenerRolesUsuario() {
+  this.usuarioService.obtenerRolesUsuario().subscribe((roles: rolesDTO[]) => {
+
+    this.esAdministrador = roles.some(rol => rol.rolNombre === 'ADMINISTRADOR');
+    this.esArchivador = roles.some(rol => rol.rolNombre === 'ARCHIVADOR');
+    this.esAuxiliarInvestigador = roles.some(rol => rol.rolNombre === 'AUXILIAR INVESTIGADOR');
+    this.esMesaDePartes = roles.some(rol => rol.rolNombre === 'MESA DE PARTES');
+    console.log("Administrador => ", this.esAdministrador);
+    console.log("Archivador => ", this.esArchivador);
+    console.log("Auxiliar Investigador => ", this.esAuxiliarInvestigador);
+    console.log("Mesa de Partes => ", this.esMesaDePartes);
+  });
+}
 
 
 
 }
+
+
+
+

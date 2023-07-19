@@ -120,7 +120,7 @@ console.log({
 this.usuarioService.registrarUsuario(usuario).subscribe(
   
   response =>{
-    Swal.fire('Éxito', 'Denuncia guardada correctamente', 'success');
+    Swal.fire('Éxito', 'El usuario ha sido registrado correctamente', 'success');
     
     this.usuariosForm.reset();
 

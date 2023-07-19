@@ -2,7 +2,9 @@
 import { LoginService } from './_service/login.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Component, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
+import { RolesDTO } from './_model/usuario';
+import { UsuarioService } from './_service/usuario.service';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +13,36 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
 
+
+   esAdministrador:boolean= false;
+   esArchivador:boolean= false;
+   esAuxiliarInvestigador:boolean= false;
+   esMesaDePartes:boolean= false;
+
+
+
  @ViewChild('sidenav') sidenav: MatSidenav;
   title = 'vocalia_front';
   sidenavOpened = true;
 
-  constructor(private loginService: LoginService,private router: Router) {}
+  constructor(private loginService: LoginService,
+                              private router: Router,
+                              private usuarioService: UsuarioService)
+                               {
+                                this.router.events.subscribe(event => {
+                                  if (event instanceof NavigationStart) {
+                                    // Reinicia los roles al navegar a una nueva ruta
+                                    this.obtenerRolesUsuario();
+                                  }
+                                });
+                              }
+                              
+
+
+  ngOnInit() {
+
+    this.obtenerRolesUsuario();
+  }
 
   isLoggedIn(): boolean {
     return this.loginService.isAuthenticated();
@@ -24,6 +51,7 @@ export class AppComponent {
   logout(): void {
     this.loginService.logout();
     this.closeSidenav();
+    this.resetRoles();
   }
 
   toggleSidenav() {
@@ -51,6 +79,27 @@ export class AppComponent {
 
   }
 
+  obtenerRolesUsuario() {
+    this.usuarioService.obtenerRolesUsuario().subscribe((roles: RolesDTO[]) => {
+      this.resetRoles(); 
+      console.log("Roles del usuario:", roles);
+      this.esAdministrador = roles.some(rol => rol.rolNombre === 'ADMINISTRADOR');
+      this.esArchivador = roles.some(rol => rol.rolNombre === 'ARCHIVADOR');
+      this.esAuxiliarInvestigador = roles.some(rol => rol.rolNombre === 'AUXILIAR INVESTIGADOR');
+      this.esMesaDePartes = roles.some(rol => rol.rolNombre === 'MESA DE PARTES');
+      console.log("Administrador => ", this.esAdministrador);
+      console.log("Archivador => ", this.esArchivador);
+      console.log("Auxiliar Investigador => ", this.esAuxiliarInvestigador);
+      console.log("Mesa de Partes => ", this.esMesaDePartes);
+    });
+  }
+  
+  resetRoles(): void {
+    this.esAdministrador = false;
+    this.esArchivador = false;
+    this.esAuxiliarInvestigador = false;
+    this.esMesaDePartes = false;
+  }
 
 }
 
