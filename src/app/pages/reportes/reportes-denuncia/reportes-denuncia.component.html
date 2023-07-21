@@ -1,10 +1,34 @@
 <mat-toolbar>Reporte Denuncias/Expedientes</mat-toolbar>
 
+<form [formGroup]="formulario"> <!-- Agregar la directiva formGroup y vincularla al FormGroup en tu componente -->
+  <div class="col">
+    <mat-form-field>
+      <mat-label>Etapa</mat-label>
+      <mat-select formControlName="estadoDenuncia">
+        <mat-option *ngFor="let estado of estadosDenuncias" [value]="estado.idValor">
+          {{ estado.dsValor }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="margin-bottom">
+        <mat-label>Fecha alta</mat-label>
+        <input type="date" matInput formControlName="fcAltaDenuncia" >
+    </mat-form-field>
+  </div>
+
+    <div class="col" >
+        <a  (click)="descargarArchivoExcel()">
+            <button [disabled]="!formulario.get('estadoDenuncia')?.value" type="button" class="mr-3 btn btn-danger btn-sm">
+                <i class="fas fa-cloud-download-alt"></i> Descargar reporte
+            </button>
+        </a>       
+    </div>
+
+</form>
+
 <div class="col-md-3">
     <canvas #myChart width="100" ></canvas>
 </div>
-
-
-
 
 

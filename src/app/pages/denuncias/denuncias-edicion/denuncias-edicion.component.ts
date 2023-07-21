@@ -229,7 +229,7 @@ export class DenunciasEdicionComponent implements OnInit {
 
     if (dni) {
       this.personaService.buscarPorDNI(dni).subscribe((persona: Persona) => {
-        console.log('ID Persona: ', persona.idPersona);
+
         const gradoSeleccionado = this.grados.find(
           (grado) => grado.cdCodigo === persona.grado?.cdCodigo
         );
@@ -304,7 +304,7 @@ export class DenunciasEdicionComponent implements OnInit {
 
             this.denuncia.lstDenunciantes.push(denunciante);
             this.dataSourceDenunciantes.data = this.denuncia.lstDenunciantes;
-            console.log('Lista de DENUNCIANTES:', this.denuncia.lstDenunciantes);
+
 
             Swal.fire('Éxito', 'Denunciante agregado correctamente', 'success');
           } else {
@@ -430,7 +430,7 @@ revertirEliminarDenunciante(idPersona: number) {
 
               this.denuncia.lstDenunciados.push(denunciado);
               this.dataSourceDenunciados.data = this.denuncia.lstDenunciados;
-              console.log('Lista de DENUNCIADOS:', this.denuncia.lstDenunciados);
+
 
               Swal.fire('Éxito', 'Denunciado agregado correctamente', 'success');
             } else {
@@ -581,7 +581,7 @@ revertirEliminarDenunciado(idPersona: number) {
         this.generos = generos;
         this.tiposIdentificacion = tiposIdentificacion;
         this.grados = grados;
-        console.log(this.tiposIdentificacion);
+
       }
     );
   }
@@ -593,7 +593,7 @@ revertirEliminarDenunciado(idPersona: number) {
       let cdEstadoDenunciaForm : any = this.denunciaForm.get('cdEstadoDenuncia');
 
       if( cdEstadoDenunciaForm.value == 'DCIA'){//Denuncia
-        console.log("CODIGO ESTADO => ", cdEstadoDenunciaForm);
+
         
         return estadosDenuncias.filter(x=>x.cdCodigo=='DCIA'||x.cdCodigo=='OTR'||x.cdCodigo=='PRM');
       }else if( cdEstadoDenunciaForm.value == 'OTR'){//Otros
@@ -875,8 +875,6 @@ revertirEliminarDenunciado(idPersona: number) {
         this.denuncia.lstDenunciados = denunciados;
         this.dataSourceDenunciados.data = denunciados;
 
-        //console.log(denunciados);
-        //console.log("=====> " +  this.dataSourceDenunciados.data );
 
       });
   }
@@ -891,12 +889,10 @@ revertirEliminarDenunciado(idPersona: number) {
   
     dialogRef.afterClosed().subscribe((dniRegistrado: string) => {
       if (dniRegistrado) {
-
-        console.log("DNI REGISTRADO ===> ", dniRegistrado);
         
         // Se ha registrado un nuevo denunciante, buscar y autocompletar los datos
         this.personaService.buscarPorDNI(dniRegistrado).subscribe((persona: Persona) => {
-          console.log('ID Persona: ', persona.idPersona);
+
           const gradoSeleccionado = this.grados.find(
             (grado) => grado.cdCodigo === persona.grado?.cdCodigo
           );
@@ -935,12 +931,10 @@ abrirDialogoPersonaDenunciado(): void {
 
   dialogRef.afterClosed().subscribe((dniRegistrado: string) => {
     if (dniRegistrado) {
-
-      console.log("DNI REGISTRADO ===> ", dniRegistrado);
-      
+     
       // Se ha registrado un nuevo denunciante, buscar y autocompletar los datos
       this.personaService.buscarPorDNI(dniRegistrado).subscribe((persona: Persona) => {
-        console.log('ID Persona: ', persona.idPersona);
+
         const gradoSeleccionado = this.grados.find(
           (grado) => grado.cdCodigo === persona.grado?.cdCodigo
         );
@@ -1015,9 +1009,6 @@ subirArchivo(file: File | undefined): void {
         this.denunciaForm.get('linkFile')?.patchValue(downloadURL);
         this.denunciaForm.get('nmArchivo')?.patchValue(file.name);
 
-        console.log("nombre archivo" +'/files/'+downloadURL);
-        console.log("link firebase" + this.linkFile);
-        console.log("nombre archivo" + this.nmArchivo);
         this.cargando = false; 
       },
       (error: any) => {
@@ -1059,10 +1050,7 @@ obtenerRolesUsuario() {
     this.esArchivador = roles.some(rol => rol.rolNombre === 'ARCHIVADOR');
     this.esAuxiliarInvestigador = roles.some(rol => rol.rolNombre === 'AUXILIAR INVESTIGADOR');
     this.esMesaDePartes = roles.some(rol => rol.rolNombre === 'MESA DE PARTES');
-    console.log("Administrador => ", this.esAdministrador);
-    console.log("Archivador => ", this.esArchivador);
-    console.log("Auxiliar Investigador => ", this.esAuxiliarInvestigador);
-    console.log("Mesa de Partes => ", this.esMesaDePartes);
+
   });
 }
 
